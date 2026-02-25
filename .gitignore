@@ -1,0 +1,17 @@
+# Python
+flask_api/.venv/
+flask_api/__pycache__/
+flask_api/*.pyc
+flask_api/*.pyo
+flask_api/.env
+
+# Node / Nuxt
+prediksi-tren-pasar/node_modules/
+prediksi-tren-pasar/.nuxt/
+prediksi-tren-pasar/.output/
+prediksi-tren-pasar/dist/
+prediksi-tren-pasar/.env
+
+# OS
+.DS_Store
+Thumbs.db

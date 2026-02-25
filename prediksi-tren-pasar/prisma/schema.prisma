@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  predictions           Prediction[]
+  businessRecommendations BusinessRecommendation[]
+
+  @@map("users")
+}
+
+model Product {
+  id              String   @id @default(uuid())
+  namaProduk      String
+  kategori        String
+  subKategori     String?
+  hargaProduk     Int
+  rating          Float    @default(0)
+  jumlahTerjual   Int      @default(0)
+  namaToko        String?
+  url             String?
+  label           Int?     // 0 = Kurang Menarik, 1 = Menarik
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("products")
+}
+
+model Prediction {
+  id                String   @id @default(uuid())
+  userId            String
+  namaProduk        String
+  kategori          String
+  subKategori       String?
+  hargaProduk       Int
+  targetRating      Float
+  predictionScore   Float    // Skor prediksi dari model (0-100%)
+  predictionLabel   Int      // 0 atau 1
+  insight           String?  @db.Text
+  createdAt         DateTime @default(now())
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("predictions")
+}
+
+model BusinessRecommendation {
+  id                String   @id @default(uuid())
+  userId            String
+  namaProduk        String
+  kategori          String
+  subKategori       String?
+  hargaProduk       Int
+  targetRating      Float
+  similarProducts   String?  @db.Text // JSON string untuk produk kompetitor
+  avgHargaKompetitor Float?
+  avgRatingKompetitor Float?
+  recommendations   String   @db.Text // Rekomendasi lengkap
+  createdAt         DateTime @default(now())
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("business_recommendations")
+}
