@@ -138,6 +138,15 @@ PRODUK_KATEGORI_MAP = {
     'miniatur'          : 'Aksesoris & Souvenir',
 }
 
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({
+        "status": "ok",
+        "model": "model_umkm_bogor.joblib",
+        "dataset_rows": len(df),
+        "message": "Flask ML API siap digunakan ✅"
+    })
+
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
@@ -296,4 +305,4 @@ def predict():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5001)
