@@ -1,0 +1,14 @@
+[variables]
+NIXPACKS_NODE_VERSION = "22"
+
+[phases.setup]
+nixPkgs = ["nodejs_22"]
+
+[phases.install]
+cmds = ["npm ci --ignore-scripts"]
+
+[phases.build]
+cmds = ["npx prisma generate", "npx nuxt build"]
+
+[start]
+cmd = "npx prisma migrate deploy && node .output/server/index.mjs"
