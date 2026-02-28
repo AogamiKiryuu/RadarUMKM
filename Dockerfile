@@ -34,4 +34,4 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOST=0.0.0.0
 
-CMD ["sh", "-c", "echo 'Running migrations...' && node scripts/migrate.js && echo 'Seeding products...' && node scripts/import-products.js && echo 'Starting server...' && node .output/server/index.mjs"]
+CMD ["node", ".output/server/index.mjs"]

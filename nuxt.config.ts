@@ -32,4 +32,10 @@ export default defineNuxtConfig({
       appName: 'RadarUMKMBogor',
     },
   },
+
+  nitro: {
+    externals: {
+      inline: ['pg', 'csv-parse'],
+    },
+  },
 });
