@@ -134,7 +134,6 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const router = useRouter();
 const colorMode = useColorMode();
 const toast = useToast();
 const sidebarOpen = ref(false);
@@ -164,17 +163,20 @@ const toggleColorMode = () => {
   colorMode.preference = colorMode.preference === 'dark' ? 'light' : 'dark';
 };
 
+const { fetch: fetchSession } = useUserSession();
+
 const handleLogout = async () => {
   const t = toast.add({ title: 'Keluar...', description: 'Sedang mengakhiri sesi Anda', icon: 'i-heroicons-arrow-right-on-rectangle', color: 'neutral' });
   try {
     await $fetch('/api/auth/logout', { method: 'POST' });
+    // Sync client-side session state so loggedIn becomes false before navigating
+    await fetchSession();
     toast.remove(t.id);
     toast.add({ title: 'Berhasil Keluar', description: 'Sampai jumpa kembali! 👋', color: 'success', icon: 'i-heroicons-check-circle' });
+    await navigateTo('/');
   } catch {
     toast.remove(t.id);
     toast.add({ title: 'Gagal Keluar', description: 'Terjadi kesalahan, coba lagi', color: 'error', icon: 'i-heroicons-exclamation-circle' });
-  } finally {
-    router.push('/');
   }
 };
 </script>
