@@ -24,6 +24,9 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/data ./data
+COPY --from=builder /app/app/generated ./app/generated
 
 EXPOSE 3000
 
@@ -31,4 +34,4 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOST=0.0.0.0
 
-CMD ["sh", "-c", "echo 'Running migrations...' && ./node_modules/.bin/prisma migrate deploy --schema=./prisma/schema.prisma && echo 'Migrations done!' && node .output/server/index.mjs"]
+CMD ["sh", "-c", "echo 'Running migrations...' && ./node_modules/.bin/prisma migrate deploy && echo 'Seeding products...' && node scripts/import-products.js && echo 'Starting server...' && node .output/server/index.mjs"]
