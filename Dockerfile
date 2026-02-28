@@ -23,9 +23,6 @@ COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/start.sh ./start.sh
-
-RUN chmod +x ./start.sh
 
 EXPOSE 3000
 
@@ -33,4 +30,4 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOST=0.0.0.0
 
-CMD ["./start.sh"]
+CMD ["sh", "-c", "echo 'Running migrations...' && ./node_modules/.bin/prisma migrate deploy --schema=./prisma/schema.prisma && echo 'Migrations done!' && node .output/server/index.mjs"]
