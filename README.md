@@ -2,6 +2,8 @@
 
 > Sistem prediksi daya tarik produk dan rekomendasi strategi bisnis untuk UMKM Kota & Kabupaten Bogor berbasis Text Mining dan Machine Learning.
 
+🌐 **Live:** [radarumkm-production.up.railway.app](https://radarumkm-production.up.railway.app)
+
 ---
 
 ## Deskripsi
@@ -13,16 +15,29 @@ Aplikasi ini membantu pelaku UMKM Bogor untuk:
 
 ---
 
+## Deployment
+
+| Layanan | Platform | URL |
+|---|---|---|
+| Aplikasi Web (Nuxt) | Railway | [radarumkm-production.up.railway.app](https://radarumkm-production.up.railway.app) |
+| Database (PostgreSQL) | Railway | *(internal, via DATABASE_URL)* |
+| ML API (Flask) | Render | [radarumkmbogor-api.onrender.com](https://radarumkmbogor-api.onrender.com) |
+| Flask Health Check | Render | [radarumkmbogor-api.onrender.com/health](https://radarumkmbogor-api.onrender.com/health) |
+
+---
+
 ## Teknologi
 
 | Layer | Stack |
 |---|---|
 | Frontend | Nuxt 4 + Vue 3 + TypeScript |
 | UI Framework | Nuxt UI v4 (Tailwind CSS v4) |
-| Database | PostgreSQL + Prisma ORM |
+| Database | PostgreSQL + Prisma ORM v7 |
 | Authentication | nuxt-auth-utils |
 | ML Backend | Flask (Python 3.12) + scikit-learn + PySastrawi |
-| Model | Random Forest / Gradient Boosting (`.joblib`) |
+| Model | Random Forest (.joblib) |
+| Hosting Web | Railway (Docker) |
+| Hosting ML API | Render |
 
 ---
 
@@ -39,7 +54,7 @@ Aplikasi ini membantu pelaku UMKM Bogor untuk:
 
 ## Struktur Proyek
 
-```
+\\\
 prediksi-tren-pasar/
 ├── app/
 │   ├── pages/
@@ -50,94 +65,88 @@ prediksi-tren-pasar/
 │   ├── middleware/
 │   │   └── auth.ts             # Route guard
 │   └── generated/prisma/       # Prisma generated client
-├── server/api/
-│   ├── auth/                   # Login, Register, Logout
-│   ├── dashboard/stats.get.ts  # Dashboard statistics
-│   ├── predictions/save.post.ts
-│   └── recommendations/analyze.post.ts
-├── flask_api/
-│   ├── app.py                  # Flask ML API (port 5001)
-│   ├── model_umkm_bogor.joblib # Model ML terlatih
-│   ├── dataset_umkm_bogor.csv  # Dataset produk Bogor
-│   └── requirements.txt
+├── server/
+│   ├── api/
+│   │   ├── auth/               # Login, Register, Logout
+│   │   ├── dashboard/          # Dashboard statistics
+│   │   ├── predictions/        # Simpan prediksi
+│   │   └── recommendations/    # Analisis & simpan rekomendasi
+│   └── plugins/
+│       └── migrate.ts          # Auto migration + seeding saat server start
 ├── prisma/
-│   └── schema.prisma           # Database schema
+│   ├── schema.prisma           # Database schema
+│   └── migrations/             # SQL migration files
+├── scripts/
+│   └── import-products.js      # Script seeder manual (opsional)
 ├── data/
 │   ├── raw/                    # Dataset mentah hasil scraping
 │   └── processed/              # Dataset setelah preprocessing
 ├── docs/
 │   ├── sistem-prediksi.md      # Dokumentasi teknis prediksi
 │   └── sistem-rekomendasi.md   # Dokumentasi teknis rekomendasi
-├── start.bat                   # Script menjalankan semua server (Windows)
-├── start.ps1                   # Script menjalankan semua server (PowerShell)
+├── Dockerfile                  # Docker build untuk Railway
+├── railway.toml                # Konfigurasi Railway deployment
+├── start.bat                   # Script dev lokal (Windows)
+├── start.ps1                   # Script dev lokal (PowerShell)
 └── nuxt.config.ts
-```
+\\\
 
 ---
 
-## Cara Menjalankan
+## Cara Menjalankan (Development Lokal)
 
 ### Prasyarat
 
-- **Node.js** >= 18
-- **Python** 3.12
+- **Node.js** >= 20.19
 - **PostgreSQL** berjalan di port 5432
 
 ### 1. Clone & Install
 
-```bash
-# Install dependencies Nuxt
+\\\ash
 npm install
-
-# Install dependencies Flask
-cd flask_api
-pip install -r requirements.txt
-cd ..
-```
+\\\
 
 ### 2. Setup Environment
 
-Buat file `.env` di root:
+Buat file \.env\ di root:
 
-```env
+\\\nv
 DATABASE_URL="postgresql://user:password@localhost:5432/prediksi_tren_pasar"
 NUXT_SESSION_PASSWORD="ganti-dengan-string-acak-minimal-32-karakter"
-FLASK_API_URL="http://127.0.0.1:5001"
-```
+FLASK_API_URL="https://radarumkmbogor-api.onrender.com"
+\\\
+
+> Flask ML API sudah di-host di Render — tidak perlu install Python lokal.
 
 ### 3. Setup Database
 
-```bash
-# Jalankan migrasi
-npx prisma migrate deploy
-```
+\\\ash
+npx prisma migrate dev
+node scripts/import-products.js
+\\\
 
-### 4. Jalankan Aplikasi
+### 4. Jalankan
 
-**Cara mudah — satu klik (Windows):**
+\\\ash
+# Cara mudah (Windows)
+start.bat
 
-```
-Klik dua kali start.bat
-```
-
-**Atau manual:**
-
-```bash
-# Terminal 1 — Flask API
-cd flask_api
-python app.py
-
-# Terminal 2 — Nuxt
+# Atau manual
 npm run dev
-```
+\\\
 
-### 5. Akses
+Buka [http://localhost:3000](http://localhost:3000)
 
-| Layanan | URL |
+---
+
+## Environment Variables (Production / Railway)
+
+| Variable | Keterangan |
 |---|---|
-| Aplikasi Web | http://localhost:3000 |
-| Flask ML API | http://localhost:5001 |
-| Flask Health Check | http://localhost:5001/health |
+| \DATABASE_URL\ | Connection string PostgreSQL Railway |
+| \NUXT_SESSION_PASSWORD\ | String acak >= 32 karakter untuk enkripsi session |
+| \FLASK_API_URL\ | \https://radarumkmbogor-api.onrender.com\ |
+| \NODE_ENV\ | \production\ |
 
 ---
 
@@ -157,7 +166,9 @@ Data produk diambil dari scraping marketplace (Tokopedia, Shopee, Lazada) dengan
 - Nama produk, kategori, sub kategori
 - Harga, jumlah terjual, rating
 - Nama toko, URL produk, marketplace
-- Label daya tarik (binary: 0 / 1)
+- Label daya tarik (binary: 0 = kurang menarik / 1 = menarik)
+
+Total: **597 produk** tersimpan di database PostgreSQL.
 
 ---
 
