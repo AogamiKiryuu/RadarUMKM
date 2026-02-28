@@ -54,7 +54,7 @@ Aplikasi ini membantu pelaku UMKM Bogor untuk:
 
 ## Struktur Proyek
 
-\\\
+```
 prediksi-tren-pasar/
 ├── app/
 │   ├── pages/
@@ -89,7 +89,7 @@ prediksi-tren-pasar/
 ├── start.bat                   # Script dev lokal (Windows)
 ├── start.ps1                   # Script dev lokal (PowerShell)
 └── nuxt.config.ts
-\\\
+```
 
 ---
 
@@ -102,38 +102,38 @@ prediksi-tren-pasar/
 
 ### 1. Clone & Install
 
-\\\ash
+```bash
 npm install
-\\\
+```
 
 ### 2. Setup Environment
 
-Buat file \.env\ di root:
+Buat file `.env` di root:
 
-\\\nv
+```env
 DATABASE_URL="postgresql://user:password@localhost:5432/prediksi_tren_pasar"
 NUXT_SESSION_PASSWORD="ganti-dengan-string-acak-minimal-32-karakter"
 FLASK_API_URL="https://radarumkmbogor-api.onrender.com"
-\\\
+```
 
 > Flask ML API sudah di-host di Render — tidak perlu install Python lokal.
 
 ### 3. Setup Database
 
-\\\ash
+```bash
 npx prisma migrate dev
 node scripts/import-products.js
-\\\
+```
 
 ### 4. Jalankan
 
-\\\ash
+```bash
 # Cara mudah (Windows)
 start.bat
 
 # Atau manual
 npm run dev
-\\\
+```
 
 Buka [http://localhost:3000](http://localhost:3000)
 
@@ -143,10 +143,10 @@ Buka [http://localhost:3000](http://localhost:3000)
 
 | Variable | Keterangan |
 |---|---|
-| \DATABASE_URL\ | Connection string PostgreSQL Railway |
-| \NUXT_SESSION_PASSWORD\ | String acak >= 32 karakter untuk enkripsi session |
-| \FLASK_API_URL\ | \https://radarumkmbogor-api.onrender.com\ |
-| \NODE_ENV\ | \production\ |
+| `DATABASE_URL` | Connection string PostgreSQL Railway |
+| `NUXT_SESSION_PASSWORD` | String acak >= 32 karakter untuk enkripsi session |
+| `FLASK_API_URL` | `https://radarumkmbogor-api.onrender.com` |
+| `NODE_ENV` | `production` |
 
 ---
 
