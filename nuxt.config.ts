@@ -27,10 +27,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    flaskApiUrl: process.env.FLASK_API_URL || 'http://127.0.0.1:5001',
+    flaskApiUrl: process.env.FLASK_API_URL || 'https://radarumkmbogor-api.onrender.com',
     public: {
       appName: 'RadarUMKMBogor',
     },
   },
-
 });

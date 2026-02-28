@@ -1,9 +1,3 @@
-# Python
-flask_api/.venv/
-flask_api/__pycache__/
-flask_api/*.pyc
-flask_api/*.pyo
-
 # Node / Nuxt
 node_modules/
 .nuxt/
