@@ -1,0 +1,11 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install && npx prisma generate && npx nuxt build"
+
+[deploy]
+startCommand = "npx prisma migrate deploy && node .output/server/index.mjs"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[environments.production.deploy]
+healthcheckPath = "/"
