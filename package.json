@@ -2,6 +2,9 @@
   "name": "prediksi-tren-pasar",
   "type": "module",
   "private": true,
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "build": "nuxt build",
     "start": "node .output/server/index.mjs",
