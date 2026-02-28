@@ -3,6 +3,8 @@
 import { readFileSync, readdirSync, createReadStream } from 'fs';
 import { parse } from 'csv-parse';
 import path from 'path';
+import pg from 'pg';
+const { Pool } = pg;
 
 export default defineNitroPlugin(async () => {
   if (process.env.NODE_ENV !== 'production') return;
@@ -14,7 +16,6 @@ export default defineNitroPlugin(async () => {
   }
 
   try {
-    const { Pool } = await import('pg');
     const pool = new Pool({
       connectionString: DATABASE_URL,
       ssl: { rejectUnauthorized: false },
@@ -50,12 +51,13 @@ export default defineNitroPlugin(async () => {
       for (const migrationName of entries) {
         const sqlPath = path.join(migrationsDir, migrationName, 'migration.sql');
         let sql: string;
-        try { sql = readFileSync(sqlPath, 'utf8'); } catch { continue; }
+        try {
+          sql = readFileSync(sqlPath, 'utf8');
+        } catch {
+          continue;
+        }
 
-        const { rows } = await client.query(
-          `SELECT id FROM "_prisma_migrations" WHERE migration_name = $1 AND finished_at IS NOT NULL`,
-          [migrationName]
-        );
+        const { rows } = await client.query(`SELECT id FROM "_prisma_migrations" WHERE migration_name = $1 AND finished_at IS NOT NULL`, [migrationName]);
         if (rows.length > 0) {
           console.log(`[migrate] ⏭️  Skip: ${migrationName}`);
           continue;
@@ -63,15 +65,9 @@ export default defineNitroPlugin(async () => {
 
         console.log(`[migrate] ⚡ Applying: ${migrationName}`);
         const id = crypto.randomUUID();
-        await client.query(
-          `INSERT INTO "_prisma_migrations" (id, checksum, migration_name) VALUES ($1, $2, $3)`,
-          [id, 'plugin', migrationName]
-        );
+        await client.query(`INSERT INTO "_prisma_migrations" (id, checksum, migration_name) VALUES ($1, $2, $3)`, [id, 'plugin', migrationName]);
         await client.query(sql);
-        await client.query(
-          `UPDATE "_prisma_migrations" SET finished_at = NOW(), applied_steps_count = 1 WHERE id = $1`,
-          [id]
-        );
+        await client.query(`UPDATE "_prisma_migrations" SET finished_at = NOW(), applied_steps_count = 1 WHERE id = $1`, [id]);
         console.log(`[migrate] ✅ Applied: ${migrationName}`);
       }
       console.log('[migrate] ✅ Migration selesai!');
@@ -104,16 +100,16 @@ export default defineNitroPlugin(async () => {
               `INSERT INTO products ("id","namaProduk","kategori","subKategori","hargaProduk","jumlahTerjual","rating","namaToko","url","label","createdAt","updatedAt")
                VALUES (gen_random_uuid(),$1,$2,$3,$4,$5,$6,$7,$8,$9,NOW(),NOW())`,
               [
-                row['nama_produk']    || '',
-                row['kategori']       || '',
-                row['sub_kategori']   || null,
-                parseInt(row['harga_produk'])    || 0,
-                parseInt(row['jumlah_terjual'])  || 0,
-                parseFloat(row['rating'])        || 0.0,
-                row['nama_toko']      || null,
-                row['url_produk']     || null,
+                row['nama_produk'] || '',
+                row['kategori'] || '',
+                row['sub_kategori'] || null,
+                parseInt(row['harga_produk']) || 0,
+                parseInt(row['jumlah_terjual']) || 0,
+                parseFloat(row['rating']) || 0.0,
+                row['nama_toko'] || null,
+                row['url_produk'] || null,
                 row['label'] !== '' ? parseInt(row['label']) : null,
-              ]
+              ],
             );
             inserted++;
           }

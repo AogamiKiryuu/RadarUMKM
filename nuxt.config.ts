@@ -35,7 +35,7 @@ export default defineNuxtConfig({
 
   nitro: {
     externals: {
-      inline: ['pg', 'csv-parse'],
+      external: ['pg', 'csv-parse'],
     },
   },
 });
