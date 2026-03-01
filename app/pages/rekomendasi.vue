@@ -54,9 +54,35 @@
 
         <!-- Results Panel -->
         <div class="lg:col-span-3 space-y-4">
+          <!-- Error State -->
+          <div
+            v-if="!result && !loading && analisisError"
+            class="bg-white dark:bg-gray-900 rounded-2xl border-2 border-red-200 dark:border-red-800 p-6"
+          >
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-xl flex items-center justify-center shrink-0">
+                <UIcon name="i-heroicons-exclamation-circle" class="w-6 h-6 text-red-500" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-red-700 dark:text-red-400 mb-1">Analisis Gagal</p>
+                <p class="text-sm text-red-600 dark:text-red-300 leading-relaxed">{{ analisisError }}</p>
+                <UButton
+                  @click="analisisError = null"
+                  variant="soft"
+                  color="error"
+                  size="xs"
+                  class="mt-3"
+                  icon="i-heroicons-arrow-path"
+                >
+                  Coba Lagi
+                </UButton>
+              </div>
+            </div>
+          </div>
+
           <!-- Empty State -->
           <div
-            v-if="!result && !loading"
+            v-if="!result && !loading && !analisisError"
             class="bg-white dark:bg-gray-900 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center py-24 text-center"
           >
             <div class="w-14 h-14 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-4">
@@ -121,11 +147,7 @@
 
             <!-- Strategy Cards -->
             <div class="space-y-3">
-              <div
-                v-for="strategy in result.strategies"
-                :key="strategy.id"
-                class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden"
-              >
+              <div v-for="strategy in result.strategies" :key="strategy.id" class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
                 <div class="px-5 py-4 flex items-center justify-between gap-3">
                   <div class="flex items-center gap-3">
                     <div :class="strategy.color" class="p-2 rounded-xl">
@@ -183,7 +205,13 @@
                   <UIcon name="i-heroicons-star" class="w-5 h-5 text-amber-500" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <a v-if="result.topSeller.url && result.topSeller.url !== 'nan'" :href="result.topSeller.url" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-emerald-700 dark:text-emerald-400 hover:underline line-clamp-2">
+                  <a
+                    v-if="result.topSeller.url && result.topSeller.url !== 'nan'"
+                    :href="result.topSeller.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-sm font-semibold text-emerald-700 dark:text-emerald-400 hover:underline line-clamp-2"
+                  >
                     {{ result.topSeller.nama_produk }}
                   </a>
                   <p v-else class="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2">{{ result.topSeller.nama_produk }}</p>
@@ -222,7 +250,14 @@
                   <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
                     <tr v-for="(product, idx) in result.similarProducts" :key="idx" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                       <td class="px-5 py-3 max-w-[200px]">
-                        <a v-if="product.url && product.url !== 'nan'" :href="product.url" target="_blank" rel="noopener noreferrer" class="text-emerald-700 dark:text-emerald-400 hover:underline line-clamp-2 font-medium">{{ product.nama_produk }}</a>
+                        <a
+                          v-if="product.url && product.url !== 'nan'"
+                          :href="product.url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-emerald-700 dark:text-emerald-400 hover:underline line-clamp-2 font-medium"
+                          >{{ product.nama_produk }}</a
+                        >
                         <span v-else class="line-clamp-2 text-gray-800 dark:text-gray-200 font-medium">{{ product.nama_produk }}</span>
                       </td>
                       <td class="px-5 py-3 text-gray-500 dark:text-gray-400 text-xs">{{ product.nama_toko }}</td>
@@ -255,6 +290,7 @@ const toast = useToast();
 const loading = ref(false);
 const form = ref({ namaProduk: '', kategori: '', subKategori: '', hargaProduk: 0, targetRating: 4.5 });
 const result = ref<any>(null);
+const analisisError = ref<string | null>(null);
 const fromPrediksi = ref(false);
 
 onMounted(async () => {
@@ -276,15 +312,20 @@ onMounted(async () => {
 const kategoris = ['Makanan', 'Minuman', 'Pakaian & Fashion', 'Aksesoris & Souvenir'];
 
 const subKategoriMap: Record<string, string[]> = {
-  'Makanan'             : ['Camilan & Snack', 'Kue & Roti', 'Lauk & Bahan Makanan', 'Buah & Bahan Mentah Segar', 'Oleh-oleh Umum'],
-  'Minuman'             : ['Kopi', 'Teh', 'Minuman Herbal & Seduh', 'Susu & Minuman Lainnya'],
-  'Pakaian & Fashion'   : ['Atasan & Pakaian Kasual', 'Pakaian Tradisional & Etnik', 'Pakaian Anak'],
+  Makanan: ['Camilan & Snack', 'Kue & Roti', 'Lauk & Bahan Makanan', 'Buah & Bahan Mentah Segar', 'Oleh-oleh Umum'],
+  Minuman: ['Kopi', 'Teh', 'Minuman Herbal & Seduh', 'Susu & Minuman Lainnya'],
+  'Pakaian & Fashion': ['Atasan & Pakaian Kasual', 'Pakaian Tradisional & Etnik', 'Pakaian Anak'],
   'Aksesoris & Souvenir': ['Aksesoris & Souvenir'],
 };
 
 const subKategoris = computed(() => subKategoriMap[form.value.kategori] ?? []);
 
-watch(() => form.value.kategori, () => { form.value.subKategori = ''; });
+watch(
+  () => form.value.kategori,
+  () => {
+    form.value.subKategori = '';
+  },
+);
 
 const scoreBannerClass = computed(() => {
   const s = result.value?.score ?? 0;
@@ -321,6 +362,7 @@ const handleAnalisis = async () => {
   }
   loading.value = true;
   result.value = null;
+  analisisError.value = null;
   const t = toast.add({ title: 'Menganalisis bisnis Anda...', description: 'Sedang menyiapkan rekomendasi strategis', icon: 'i-heroicons-light-bulb', color: 'neutral' });
   try {
     result.value = await $fetch('/api/recommendations/analyze', { method: 'POST', body: form.value });
@@ -328,7 +370,7 @@ const handleAnalisis = async () => {
     toast.add({ title: 'Analisis Selesai!', description: 'Rekomendasi strategis telah ditampilkan', color: 'success', icon: 'i-heroicons-check-circle' });
   } catch (err: any) {
     toast.remove(t.id);
-    toast.add({ title: 'Analisis Gagal', description: err?.data?.message || err.message, color: 'error', icon: 'i-heroicons-exclamation-circle' });
+    analisisError.value = err?.data?.message || err?.message || 'Terjadi kesalahan. Coba lagi.';
   } finally {
     loading.value = false;
   }
@@ -340,6 +382,7 @@ const downloadPDF = () => {
 
 const resetForm = () => {
   result.value = null;
+  analisisError.value = null;
   fromPrediksi.value = false;
   form.value = { namaProduk: '', kategori: '', subKategori: '', hargaProduk: 0, targetRating: 4.5 };
 };
@@ -348,7 +391,10 @@ const resetForm = () => {
 <style>
 @media print {
   /* Sembunyikan sidebar form, navbar, tombol aksi */
-  header, nav, aside, footer,
+  header,
+  nav,
+  aside,
+  footer,
   .lg\:col-span-2,
   .print\:hidden {
     display: none !important;
@@ -362,10 +408,21 @@ const resetForm = () => {
   .grid.grid-cols-2.gap-3:last-of-type {
     display: none !important;
   }
-  * { box-shadow: none !important; }
-  body, .bg-white { background: white !important; color: black !important; }
-  .rounded-2xl { break-inside: avoid; page-break-inside: avoid; }
-  @page { margin: 1.5cm; size: A4; }
+  * {
+    box-shadow: none !important;
+  }
+  body,
+  .bg-white {
+    background: white !important;
+    color: black !important;
+  }
+  .rounded-2xl {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
 }
 </style>
-
