@@ -34,14 +34,14 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Set session
+  // Set session — berlaku 7 hari, lalu harus login ulang
   await setUserSession(event, {
     user: {
       id: user.id,
       email: user.email,
       name: user.name,
     },
-  });
+  }, { maxAge: 60 * 60 * 24 * 7 });
 
   return {
     success: true,
