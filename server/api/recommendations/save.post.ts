@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 
   const recommendation = await prisma.businessRecommendation.create({
     data: {
-      userId: session.user.id,
+      userId: (session.user as any).id,
       namaProduk: body.namaProduk,
       kategori: body.kategori,
       subKategori: body.subKategori,

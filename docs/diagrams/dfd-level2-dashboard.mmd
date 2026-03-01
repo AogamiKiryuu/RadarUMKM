@@ -1,0 +1,24 @@
+flowchart TD
+    U(["Pengguna"])
+    DB_PROD[("products")]
+    DB_PRED[("predictions")]
+
+    U -- "GET /api/dashboard/stats" --> P41
+
+    subgraph P4 ["Proses 4.0 — Dashboard & Statistik"]
+        P41["4.1\nAuth Check\n& Handler"]
+        P42["4.2\nQuery Agregat Produk\nprisma.product.aggregate\ngroupBy kategori & marketplace"]
+        P43["4.3\nEkstrak Keyword\ndari namaProduk"]
+        P44["4.4\nQuery Riwayat\nPrediksi"]
+        P45["4.5\nSusun Response\nStatistik"]
+    end
+
+    P41 -- "authorized" --> P42
+    P41 -- "Error 401" --> U
+    P42 <-- "query" --> DB_PROD
+    P44 <-- "query" --> DB_PRED
+    P42 --> P43
+    P42 --> P45
+    P43 --> P45
+    P44 --> P45
+    P45 -- "totalProduk, avgHarga,\nchart data, topKeywords,\ntopProductsByPlatform" --> U

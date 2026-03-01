@@ -276,10 +276,10 @@ onMounted(async () => {
 const kategoris = ['Makanan', 'Minuman', 'Pakaian & Fashion', 'Aksesoris & Souvenir'];
 
 const subKategoriMap: Record<string, string[]> = {
-  Makanan: ['Kue & Roti', 'Makanan Ringan', 'Makanan Beku', 'Makanan Siap Saji', 'Oleh-oleh'],
-  Minuman: ['Minuman Kemasan', 'Minuman Segar', 'Minuman Herbal', 'Kopi & Teh'],
-  'Pakaian & Fashion': ['Atasan', 'Bawahan', 'Dress & Gamis', 'Jaket & Outerwear', 'Aksesori Fashion'],
-  'Aksesoris & Souvenir': ['Gelang & Kalung', 'Tas', 'Souvenir Pernikahan', 'Hiasan Rumah', 'Kerajinan Lokal'],
+  'Makanan'             : ['Camilan & Snack', 'Kue & Roti', 'Lauk & Bahan Makanan', 'Buah & Bahan Mentah Segar', 'Oleh-oleh Umum'],
+  'Minuman'             : ['Kopi', 'Teh', 'Minuman Herbal & Seduh', 'Susu & Minuman Lainnya'],
+  'Pakaian & Fashion'   : ['Atasan & Pakaian Kasual', 'Pakaian Tradisional & Etnik', 'Pakaian Anak'],
+  'Aksesoris & Souvenir': ['Aksesoris & Souvenir'],
 };
 
 const subKategoris = computed(() => subKategoriMap[form.value.kategori] ?? []);

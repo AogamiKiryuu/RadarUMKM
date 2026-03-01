@@ -1,0 +1,45 @@
+flowchart TD
+    START([Mulai]) --> LAND[Landing Page]
+
+    LAND --> CEK_AUTH{Sudah\nLogin?}
+    CEK_AUTH -- Tidak --> AUTH[Login / Register]
+    AUTH --> AUTH_OK{Berhasil?}
+    AUTH_OK -- Tidak --> AUTH
+    AUTH_OK -- Ya --> DASH
+    CEK_AUTH -- Ya --> DASH[Dashboard\nLihat Statistik & Chart]
+
+    DASH --> FITUR{Pilih Fitur}
+
+    FITUR -- Prediksi --> PRED[Isi Form Produk\nnama, kategori, harga, rating]
+    PRED --> PRED_PROC[Proses ML:\nTF-IDF + Random Forest]
+    PRED_PROC --> PRED_OK{Berhasil?}
+    PRED_OK -- Tidak --> ERR_PRED[Tampilkan Pesan Error]
+    ERR_PRED --> PRED
+    PRED_OK -- Ya --> PRED_RESULT[Tampilkan Hasil:\nLabel + Peluang + Kompetitor]
+    PRED_RESULT --> LANJUT{Lanjut ke\nRekomendasi?}
+    LANJUT -- Ya --> REK
+    LANJUT -- Tidak --> FITUR
+
+    FITUR -- Rekomendasi --> REK[Isi Form Produk\nnama, kategori, harga, rating]
+    REK --> REK_PROC[Analisis Kompetitor\n& 4 Strategi Bisnis]
+    REK_PROC --> REK_OK{Berhasil?}
+    REK_OK -- Tidak --> ERR_REK[Tampilkan Pesan Error]
+    ERR_REK --> REK
+    REK_OK -- Ya --> REK_RESULT[Tampilkan Hasil:\nSkor + Strategi + KPI]
+    REK_RESULT --> PDF{Download PDF?}
+    PDF -- Ya --> CETAK[Cetak Laporan PDF]
+    CETAK --> FITUR
+    PDF -- Tidak --> FITUR
+
+    FITUR -- Logout --> LOGOUT[Hapus Sesi]
+    LOGOUT --> LAND
+
+    CETAK --> SELESAI([Selesai])
+
+    style START fill:#2D6A4F,color:#fff,stroke:none
+    style SELESAI fill:#2D6A4F,color:#fff,stroke:none
+    style ERR_PRED fill:#FFDDD2,stroke:#E76F51
+    style ERR_REK fill:#FFDDD2,stroke:#E76F51
+    style PRED_RESULT fill:#D8F3DC,stroke:#2D6A4F
+    style REK_RESULT fill:#D8F3DC,stroke:#2D6A4F
+    style DASH fill:#EBF5FB,stroke:#2980B9

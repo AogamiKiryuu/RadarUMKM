@@ -1,0 +1,61 @@
+@startuml navigasi-state
+skinparam backgroundColor #FAFAFA
+skinparam StateBorderColor #2D6A4F
+skinparam StateBackgroundColor #D8F3DC
+skinparam ArrowColor #1B4332
+
+title Struktur Navigasi — RadarUMKMBogor
+
+[*] --> LandingPage : Buka URL
+
+state LandingPage {
+  [*] --> HeroSection
+  HeroSection --> ModalLogin    : Klik "Masuk"
+  HeroSection --> ModalRegister : Klik "Mulai Gratis"
+  ModalLogin    --> HeroSection : Batal / ESC
+  ModalRegister --> HeroSection : Batal / ESC
+}
+
+LandingPage --> Dashboard : Login sukses
+LandingPage --> Dashboard : Register sukses
+LandingPage --> Dashboard : Session masih aktif (auto-redirect)
+
+state "Area Privat (auth middleware)" as PRIVATE {
+
+  state Dashboard {
+    [*] --> LoadStats : GET /api/dashboard/stats
+    LoadStats --> ShowCharts
+    ShowCharts --> [*]
+  }
+
+  state "Prediksi Tren" as Prediksi {
+    [*] --> FormPrediksi
+    FormPrediksi --> LoadingFL    : Submit POST /api/predict
+    LoadingFL    --> HasilPrediksi : Flask OK
+    LoadingFL    --> FormPrediksi  : Error 422 / 503
+    HasilPrediksi --> FormPrediksi : Prediksi Baru
+    HasilPrediksi --> SaveHistory  : Simpan ke localStorage
+    SaveHistory   --> HasilPrediksi
+  }
+
+  state "Rekomendasi Bisnis" as Rekomendasi {
+    [*] --> FormRekomendasi
+    note right of FormRekomendasi : Auto-fill dari\nsessionStorage\njika dari /prediksi
+    FormRekomendasi --> LoadingREC      : Submit POST /api/recommendations/analyze
+    LoadingREC      --> HasilRekomendasi : OK
+    LoadingREC      --> FormRekomendasi  : Error
+    HasilRekomendasi --> PrintPDF        : Download PDF (window.print)
+    HasilRekomendasi --> FormRekomendasi : Analisis Baru
+  }
+
+}
+
+Dashboard    --> Prediksi     : Klik card / sidebar
+Dashboard    --> Rekomendasi  : Klik card / sidebar
+Prediksi     --> Rekomendasi  : Lihat Rekomendasi (sessionStorage)
+Prediksi     --> Dashboard    : Sidebar nav
+Rekomendasi  --> Dashboard    : Sidebar nav
+Rekomendasi  --> Prediksi     : Sidebar nav
+
+PRIVATE --> LandingPage : Logout (DELETE /api/auth/logout)
+@enduml

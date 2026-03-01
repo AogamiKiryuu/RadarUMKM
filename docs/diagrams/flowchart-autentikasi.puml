@@ -1,0 +1,53 @@
+@startuml flowchart-autentikasi
+skinparam style strictuml
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #2D6A4F
+skinparam ActivityBorderColor #2D6A4F
+skinparam ActivityBackgroundColor #D8F3DC
+
+title Flowchart Autentikasi — RadarUMKMBogor
+
+start
+
+:Buka Aplikasi;
+
+if (Session cookie valid?) then (Ya)
+  :Redirect ke /dashboard;
+else (Tidak)
+  :Tampilkan Landing Page;
+  :Klik "Mulai Gratis" atau "Masuk";
+
+  if (Tab aktif?) then (Register)
+    :Isi nama, email, password;
+    :POST /api/auth/register;
+    :bcrypt.hash(password, 12);
+    if (Email sudah terdaftar?) then (Ya)
+      :Tampilkan error 409\n"Email sudah digunakan";
+      stop
+    else (Tidak)
+      :prisma.user.create;
+      :setUserSession(event);
+    endif
+  else (Login)
+    :Isi email, password;
+    :POST /api/auth/login;
+    :prisma.user.findUnique;
+    if (User ditemukan?) then (Tidak)
+      :Error 401\n"Email atau password salah";
+      stop
+    else (Ya)
+      :bcrypt.compare(password, hash);
+      if (Password cocok?) then (Tidak)
+        :Error 401\n"Email atau password salah";
+        stop
+      else (Ya)
+        :setUserSession(event);
+      endif
+    endif
+  endif
+
+  :Redirect ke /dashboard;
+endif
+
+stop
+@enduml

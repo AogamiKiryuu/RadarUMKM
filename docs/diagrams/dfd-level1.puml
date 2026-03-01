@@ -1,0 +1,46 @@
+@startuml dfd-level1
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #1B4332
+skinparam PackageBorderColor #2D6A4F
+skinparam PackageBackgroundColor #D8F3DC
+
+title DFD Level 1 — RadarUMKMBogor
+
+actor "Pengguna" as USER
+
+package "Nuxt Server (Railway)" {
+  usecase "1.0\nAutentikasi" as AUTH
+  usecase "2.0\nPrediksi Tren" as PRED
+  usecase "3.0\nRekomendasi\nBisnis" as RECOM
+  usecase "4.0\nDashboard\nStatistik" as DASH
+}
+
+package "Flask ML API (Render)" {
+  usecase "5.0\nML Inference\n& Similarity" as ML
+}
+
+database "users"                    as DB_USER
+database "predictions"              as DB_PRED
+database "business_recommendations" as DB_RECOM
+database "products (dataset)"       as DB_PROD
+
+USER  --> AUTH  : email + password
+AUTH  --> USER  : session cookie
+AUTH <-> DB_USER : read / write
+
+USER  --> PRED  : data produk
+PRED  --> ML    : request prediksi
+ML    --> PRED  : hasil ML
+PRED  --> DB_PRED : simpan prediksi
+PRED  --> USER  : hasil + insight
+
+USER  --> RECOM : data produk
+RECOM <-- DB_PROD : pool kompetitor
+RECOM --> DB_RECOM : simpan rekomendasi
+RECOM --> USER  : strategi + skor + KPI
+
+USER  --> DASH  : request halaman
+DASH <-- DB_PROD : statistik dataset
+DASH <-- DB_PRED : histori prediksi
+DASH  --> USER  : chart + ringkasan
+@enduml

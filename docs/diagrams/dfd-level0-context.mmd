@@ -1,0 +1,13 @@
+flowchart LR
+    U(["Pengguna\nUMKM Bogor"])
+    SYS[["Sistem RadarUMKMBogor\nNuxt - Railway"]]
+    FLASK(["Flask ML API\nRender.com"])
+    DB[("PostgreSQL\nRailway")]
+    CSV(["Dataset CSV\nUMKM Bogor"])
+
+    U -- "Input: data produk\nnama, kategori, harga, rating" --> SYS
+    SYS -- "Output: prediksi peluang\n+ rekomendasi strategi bisnis" --> U
+    SYS -- "Request prediksi ML\nnama, kategori, harga, rating" --> FLASK
+    FLASK -- "Response: probabilitas\n+ kompetitor + narasi" --> SYS
+    SYS -- "Write: prediksi & rekomendasi\nRead: kompetitor & statistik" --> DB
+    CSV -- "Seed awal\n50.000+ produk" --> DB

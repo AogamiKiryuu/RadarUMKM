@@ -1,0 +1,69 @@
+erDiagram
+    users["Tabel users — Pengguna"] {
+        VARCHAR   id          PK  "PRIMARY KEY — ID unik (cuid)"
+        VARCHAR   email       UK  "UNIQUE, NOT NULL — Email pengguna"
+        VARCHAR   password        "NOT NULL — Kata sandi (bcrypt hash)"
+        VARCHAR   name            "NOT NULL — Nama lengkap pengguna"
+        TIMESTAMP createdAt       "DEFAULT now() — Tanggal akun dibuat"
+        TIMESTAMP updatedAt       "AUTO UPDATE — Tanggal terakhir diperbarui"
+    }
+
+    products["Tabel products — Produk UMKM"] {
+        VARCHAR   id            PK  "PRIMARY KEY — ID unik (cuid)"
+        VARCHAR   namaProduk        "NOT NULL — Nama produk UMKM"
+        VARCHAR   kategori          "NOT NULL — Kategori utama produk"
+        VARCHAR   subKategori       "NULL — Sub-kategori produk"
+        INT       hargaProduk       "NOT NULL — Harga produk (Rp)"
+        FLOAT     rating            "DEFAULT 0 — Rating produk (0–5)"
+        INT       jumlahTerjual     "DEFAULT 0 — Total unit terjual"
+        VARCHAR   namaToko          "NULL — Nama toko penjual"
+        VARCHAR   url               "NULL — URL halaman produk"
+        INT       label             "DEFAULT 0 — Label ML: 0 tidak laku, 1 laku"
+        TIMESTAMP createdAt         "DEFAULT now() — Tanggal data diimpor"
+        TIMESTAMP updatedAt         "AUTO UPDATE — Tanggal terakhir diperbarui"
+    }
+
+    predictions["Tabel predictions — Hasil Prediksi"] {
+        VARCHAR   id              PK  "PRIMARY KEY — ID unik (cuid)"
+        VARCHAR   userId          FK  "FOREIGN KEY — Referensi ke tabel users"
+        VARCHAR   namaProduk          "NOT NULL — Nama produk yang diprediksi"
+        VARCHAR   kategori            "NOT NULL — Kategori produk"
+        VARCHAR   subKategori         "NULL — Sub-kategori produk"
+        INT       hargaProduk         "NOT NULL — Harga produk yang diinput"
+        FLOAT     targetRating        "DEFAULT 0 — Target rating yang diinput"
+        FLOAT     predictionScore     "NOT NULL — Skor peluang laku (0–100)"
+        INT       predictionLabel     "NOT NULL — Label: 0 kurang, 1 cukup, 2 sangat"
+        TEXT      insight             "NULL — Narasi alasan hasil prediksi"
+        TIMESTAMP createdAt           "DEFAULT now() — Tanggal prediksi dibuat"
+    }
+
+    business_recommendations["Tabel business_recommendations — Rekomendasi Bisnis"] {
+        VARCHAR   id                  PK  "PRIMARY KEY — ID unik (cuid)"
+        VARCHAR   userId              FK  "FOREIGN KEY — Referensi ke tabel users"
+        VARCHAR   namaProduk              "NOT NULL — Nama produk yang dianalisis"
+        VARCHAR   kategori                "NOT NULL — Kategori produk"
+        VARCHAR   subKategori             "NULL — Sub-kategori produk"
+        INT       hargaProduk             "NOT NULL — Harga produk yang diinput"
+        FLOAT     targetRating            "DEFAULT 0 — Target rating yang diinput"
+        TEXT      similarProducts         "NULL — JSON daftar produk kompetitor"
+        FLOAT     avgHargaKompetitor      "DEFAULT 0 — Rata-rata harga kompetitor"
+        FLOAT     avgRatingKompetitor     "DEFAULT 0 — Rata-rata rating kompetitor"
+        TEXT      recommendations         "NOT NULL — JSON strategi rekomendasi bisnis"
+        TIMESTAMP createdAt               "DEFAULT now() — Tanggal rekomendasi dibuat"
+    }
+
+    _prisma_migrations["Tabel _prisma_migrations — Riwayat Migrasi"] {
+        VARCHAR   id                  PK  "PRIMARY KEY — ID unik migrasi"
+        VARCHAR   checksum                "NOT NULL — Hash checksum file migrasi"
+        VARCHAR   migration_name          "NOT NULL — Nama file migrasi"
+        TIMESTAMP finished_at             "NULL — Waktu migrasi selesai"
+        TEXT      logs                    "NULL — Log output migrasi"
+        TIMESTAMP rolled_back_at          "NULL — Waktu rollback jika ada"
+        TIMESTAMP started_at              "DEFAULT now() — Waktu migrasi dimulai"
+        INT       applied_steps_count     "DEFAULT 0 — Jumlah langkah yang diterapkan"
+    }
+
+    users ||--o{ predictions : "userId CASCADE DELETE"
+    users ||--o{ business_recommendations : "userId CASCADE DELETE"
+    products }o..o{ predictions : "pool kompetitor prediksi"
+    products }o..o{ business_recommendations : "pool kompetitor rekomendasi"

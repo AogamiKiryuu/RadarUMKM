@@ -1,0 +1,83 @@
+@startuml struktur-db
+skinparam linetype ortho
+skinparam backgroundColor #FAFAFA
+skinparam ClassBorderColor #2D6A4F
+skinparam ClassBackgroundColor #D8F3DC
+
+title Struktur Database — RadarUMKMBogor (PostgreSQL · Railway)
+
+class "users" << Table >> {
+  + id              : VARCHAR(36)       <<PK>>
+  + email           : VARCHAR           <<UNIQUE NOT NULL>>
+  + password        : VARCHAR           <<NOT NULL>>
+  + name            : VARCHAR           <<NOT NULL>>
+  + createdAt       : TIMESTAMPTZ       <<DEFAULT NOW()>>
+  + updatedAt       : TIMESTAMPTZ       <<auto>>
+}
+
+class "products" << Table >> {
+  + id              : VARCHAR(36)       <<PK>>
+  + namaProduk      : VARCHAR           <<NOT NULL>>
+  + kategori        : VARCHAR           <<NOT NULL>>
+  + subKategori     : VARCHAR           <<NULL>>
+  + hargaProduk     : INTEGER           <<NOT NULL>>
+  + rating          : DOUBLE PRECISION  <<DEFAULT 0>>
+  + jumlahTerjual   : INTEGER           <<DEFAULT 0>>
+  + namaToko        : VARCHAR           <<NULL>>
+  + url             : VARCHAR           <<NULL>>
+  + label           : INTEGER           <<NULL>>
+  + createdAt       : TIMESTAMPTZ       <<DEFAULT NOW()>>
+  + updatedAt       : TIMESTAMPTZ       <<auto>>
+}
+
+class "predictions" << Table >> {
+  + id              : VARCHAR(36)       <<PK>>
+  + userId          : VARCHAR(36)       <<FK NOT NULL>>
+  + namaProduk      : VARCHAR           <<NOT NULL>>
+  + kategori        : VARCHAR           <<NOT NULL>>
+  + subKategori     : VARCHAR           <<NULL>>
+  + hargaProduk     : INTEGER           <<NOT NULL>>
+  + targetRating    : DOUBLE PRECISION  <<NOT NULL>>
+  + predictionScore : DOUBLE PRECISION  <<NOT NULL>>
+  + predictionLabel : INTEGER           <<NOT NULL>>
+  + insight         : TEXT              <<NULL>>
+  + createdAt       : TIMESTAMPTZ       <<DEFAULT NOW()>>
+}
+
+class "business_recommendations" << Table >> {
+  + id                   : VARCHAR(36)       <<PK>>
+  + userId               : VARCHAR(36)       <<FK NOT NULL>>
+  + namaProduk           : VARCHAR           <<NOT NULL>>
+  + kategori             : VARCHAR           <<NOT NULL>>
+  + subKategori          : VARCHAR           <<NULL>>
+  + hargaProduk          : INTEGER           <<NOT NULL>>
+  + targetRating         : DOUBLE PRECISION  <<NOT NULL>>
+  + similarProducts      : TEXT              <<NULL>>
+  + avgHargaKompetitor   : DOUBLE PRECISION  <<NULL>>
+  + avgRatingKompetitor  : DOUBLE PRECISION  <<NULL>>
+  + recommendations      : TEXT              <<NOT NULL>>
+  + createdAt            : TIMESTAMPTZ       <<DEFAULT NOW()>>
+}
+
+class "_prisma_migrations" << Table >> {
+  + id                   : VARCHAR(36)   <<PK>>
+  + checksum             : VARCHAR(64)   <<NOT NULL>>
+  + migration_name       : VARCHAR(255)  <<NOT NULL>>
+  + finished_at          : TIMESTAMPTZ   <<NULL>>
+  + logs                 : TEXT          <<NULL>>
+  + rolled_back_at       : TIMESTAMPTZ   <<NULL>>
+  + started_at           : TIMESTAMPTZ   <<NOT NULL>>
+  + applied_steps_count  : INTEGER       <<NOT NULL DEFAULT 0>>
+}
+
+"users" "1" *-- "0..*" "predictions"              : userId (ON DELETE CASCADE)
+"users" "1" *-- "0..*" "business_recommendations" : userId (ON DELETE CASCADE)
+
+note right of "products"
+  Seed dari:
+  data/processed/dataset_umkm_bogor.csv
+  ~50.000+ produk UMKM Bogor
+  (Tokopedia, Shopee, Lazada)
+  Tidak ada FK ke tabel lain.
+end note
+@enduml

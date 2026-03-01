@@ -1,5 +1,113 @@
 import prisma from '../../utils/prisma';
 
+// ── Peta keyword produk → kategori yang BENAR ─────────────────────────────
+// Direplikasi dari PRODUK_KATEGORI_MAP di Flask app.py agar validasi konsisten.
+// Kata kunci multi-kata dicocokkan lebih dulu (diurutkan menurun by length).
+const PRODUK_KATEGORI_MAP: Record<string, string> = {
+  // ── Makanan ──────────────────────────────────────────────────────────────
+  'lapis talas'    : 'Makanan',
+  'talas bogor'    : 'Makanan',
+  'roti unyil'     : 'Makanan',
+  'toge goreng'    : 'Makanan',
+  'soto mie'       : 'Makanan',
+  'pie bogor'      : 'Makanan',
+  'pie talas'      : 'Makanan',
+  'teng teng'      : 'Makanan',
+  'enting enting'  : 'Makanan',
+  'ali agrem'      : 'Makanan',
+  'gantungan kunci': 'Aksesoris & Souvenir',
+  'magnet kulkas'  : 'Aksesoris & Souvenir',
+  'talas'          : 'Makanan',
+  'asinan'         : 'Makanan',
+  'laksa'          : 'Makanan',
+  'batagor'        : 'Makanan',
+  'dodol'          : 'Makanan',
+  'manisan'        : 'Makanan',
+  'renginang'      : 'Makanan',
+  'emping'         : 'Makanan',
+  'gepuk'          : 'Makanan',
+  'tauco'          : 'Makanan',
+  'cungkring'      : 'Makanan',
+  'keripik'        : 'Makanan',
+  'camilan'        : 'Makanan',
+  'snack'          : 'Makanan',
+  'kue'            : 'Makanan',
+  'roti'           : 'Makanan',
+  'lapis'          : 'Makanan',
+  'abon'           : 'Makanan',
+  'dendeng'        : 'Makanan',
+  'sambal'         : 'Makanan',
+  'sambel'         : 'Makanan',
+  'tempe'          : 'Makanan',
+  'tahu'           : 'Makanan',
+  'madu'           : 'Makanan',
+  'jamur'          : 'Makanan',
+  'stroberi'       : 'Makanan',
+  'strawberry'     : 'Makanan',
+  'noga'           : 'Makanan',
+  // ── Minuman ──────────────────────────────────────────────────────────────
+  'susu'           : 'Minuman',
+  'kopi'           : 'Minuman',
+  'teh'            : 'Minuman',
+  'bandrek'        : 'Minuman',
+  'minuman'        : 'Minuman',
+  'jus'            : 'Minuman',
+  'sirup'          : 'Minuman',
+  'wedang'         : 'Minuman',
+  // ── Pakaian & Fashion ────────────────────────────────────────────────────
+  'batik'          : 'Pakaian & Fashion',
+  'kebaya'         : 'Pakaian & Fashion',
+  'baju'           : 'Pakaian & Fashion',
+  'kaos'           : 'Pakaian & Fashion',
+  'jaket'          : 'Pakaian & Fashion',
+  'celana'         : 'Pakaian & Fashion',
+  'kemeja'         : 'Pakaian & Fashion',
+  'dress'          : 'Pakaian & Fashion',
+  'gamis'          : 'Pakaian & Fashion',
+  'hijab'          : 'Pakaian & Fashion',
+  'sarung'         : 'Pakaian & Fashion',
+  // ── Aksesoris & Souvenir ─────────────────────────────────────────────────
+  'kujang'         : 'Aksesoris & Souvenir',
+  'uncal'          : 'Aksesoris & Souvenir',
+  'souvenir'       : 'Aksesoris & Souvenir',
+  'topi'           : 'Aksesoris & Souvenir',
+  'tas'            : 'Aksesoris & Souvenir',
+  'dompet'         : 'Aksesoris & Souvenir',
+  'gelang'         : 'Aksesoris & Souvenir',
+  'bros'           : 'Aksesoris & Souvenir',
+  'miniatur'       : 'Aksesoris & Souvenir',
+};
+
+/**
+ * Cek apakah nama produk sesuai dengan kategori yang dipilih.
+ * Mengikuti logika PRODUK_KATEGORI_MAP di Flask app.py:
+ *   - Cari keyword terpanjang yang cocok di nama produk
+ *   - Jika ketemu dan kategori expected ≠ kategori dipilih → error
+ *   - Jika tidak ada keyword yang cocok → lewati validasi (produk baru / tidak ada di peta)
+ */
+function validateKategoriMatch(namaProduk: string, kategori: string): string | null {
+  const namaLower = namaProduk.toLowerCase();
+
+  // Urutkan keyword dari terpanjang agar multi-kata cocok lebih dulu
+  const sortedKeys = Object.keys(PRODUK_KATEGORI_MAP).sort((a, b) => b.length - a.length);
+
+  for (const kata of sortedKeys) {
+    if (namaLower.includes(kata)) {
+      const kategoriSeharusnya = PRODUK_KATEGORI_MAP[kata];
+      if (kategori !== kategoriSeharusnya) {
+        return (
+          `Kategori tidak sesuai untuk produk "${namaProduk}". ` +
+          `Kata kunci "${kata}" mengindikasikan produk ini termasuk kategori "${kategoriSeharusnya}", ` +
+          `bukan "${kategori}". Silakan pilih kategori "${kategoriSeharusnya}".`
+        );
+      }
+      break; // keyword cocok dan kategori sesuai — tidak perlu cek lebih lanjut
+    }
+  }
+
+  return null; // lolos validasi
+}
+
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event);
   if (!session.user) {
@@ -7,6 +115,12 @@ export default defineEventHandler(async (event) => {
   }
 
   const { namaProduk, kategori, subKategori, hargaProduk, targetRating } = await readBody(event);
+
+  // ── Validasi kesesuaian nama produk vs kategori ────────────────────────────
+  const mismatchError = validateKategoriMatch(namaProduk ?? '', kategori ?? '');
+  if (mismatchError) {
+    throw createError({ statusCode: 422, message: mismatchError });
+  }
 
   // 1. Find competitor products in same category
   const competitors = await prisma.product.findMany({

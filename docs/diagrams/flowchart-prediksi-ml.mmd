@@ -1,0 +1,26 @@
+flowchart TD
+    A[Input User] --> B{Validasi Nuxt\nnama, kategori,\nharga, rating}
+    B -- Gagal --> C[Error 400]
+    B -- OK --> D[Forward ke Flask API]
+
+    D --> E{Validasi Kategori\nMismatch?}
+    E -- Ya --> F[Error 422\nSaran perbaikan]
+    E -- Tidak --> G{Ada Kompetitor\nBogor?}
+    G -- Tidak --> H[Error 422\nPanduan keyword]
+    G -- Ya --> I[clean_text:\nLowercase + hapus simbol\n+ stopwords + stemming]
+
+    I --> J[TF-IDF Transform\nquery_vec]
+    J --> K[Cosine Similarity\nvs X_train_text_db]
+    K --> L[Ambil Top-5 Kompetitor\nsim_score > 0.05]
+
+    L --> M[Buat DataFrame Input\nnama_clean, kategori,\nharga, rating]
+    M --> N[rf_pipeline.predict_proba]
+    N --> O[prob kelas 1\npeluang_laku_persen]
+
+    O --> P{Tentukan Label}
+    P -- ">= 70%" --> Q[SANGAT MENARIK]
+    P -- "50-69%" --> R[CUKUP MENARIK]
+    P -- "< 50%" --> S[KURANG MENARIK]
+
+    Q & R & S --> T[Bangun Narasi Alasan]
+    T --> U[Response JSON:\nkesimpulan + peluang\n+ alasan + kompetitor]

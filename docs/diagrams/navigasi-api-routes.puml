@@ -1,0 +1,95 @@
+@startuml navigasi-api-routes
+skinparam backgroundColor #FAFAFA
+skinparam PackageBorderColor #2D6A4F
+skinparam PackageBackgroundColor #D8F3DC
+skinparam ClassBorderColor #1B4332
+skinparam ArrowColor #1B4332
+
+title API Route Map — server/api/
+
+package "auth/" {
+  class "login.post.ts" as LOGIN {
+    POST /api/auth/login
+    ..
+    body: { email, password }
+    prisma.user.findUnique
+    bcrypt.compare
+    setUserSession(event)
+  }
+  class "register.post.ts" as REGISTER {
+    POST /api/auth/register
+    ..
+    body: { name, email, password }
+    bcrypt.hash(password, 12)
+    prisma.user.create
+    setUserSession(event)
+  }
+  class "logout.delete.ts" as LOGOUT {
+    DELETE /api/auth/logout
+    ..
+    requireUserSession(event)
+    clearUserSession(event)
+  }
+}
+
+package "dashboard/" {
+  class "stats.get.ts" as STATS {
+    GET /api/dashboard/stats
+    ..
+    requireUserSession
+    prisma.product.aggregate
+    groupBy: kategori, marketplace
+    extractKeywords(namaProduk)
+    topProductsByMarketplace
+  }
+}
+
+package "predictions/" {
+  class "save.post.ts" as SAVE_PRED {
+    POST /api/predictions/save
+    ..
+    requireUserSession
+    body: hasil prediksi Flask
+    prisma.prediction.create
+  }
+}
+
+package "recommendations/" {
+  class "analyze.post.ts" as ANALYZE {
+    POST /api/recommendations/analyze
+    ..
+    requireUserSession
+    prisma.product.findMany (LIMIT 50)
+    rule-based scoring 4 strategi
+    return: skor + strategi + KPI
+  }
+  class "save.post.ts" as SAVE_RECOM {
+    POST /api/recommendations/save
+    ..
+    requireUserSession
+    body: hasil analisis
+    prisma.businessRecommendation.create
+  }
+}
+
+class "predict.post.ts" as PREDICT {
+  POST /api/predict
+  ..
+  requireUserSession
+  body: { namaProduk, kategori,
+    subKategori, hargaProduk, targetRating }
+  $fetch Flask /predict
+  return: kesimpulan + peluang + kompetitor
+}
+
+class "flask-health.get.ts" as HEALTH {
+  GET /api/flask-health
+  ..
+  $fetch Flask /health
+  return: { online: boolean }
+}
+
+PREDICT --> SAVE_PRED  : auto-save setelah prediksi
+PREDICT --> ANALYZE    : user melanjutkan ke rekomendasi
+ANALYZE --> SAVE_RECOM : user menyimpan hasil
+@enduml

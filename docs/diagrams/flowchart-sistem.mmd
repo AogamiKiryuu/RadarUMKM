@@ -1,0 +1,50 @@
+flowchart TD
+    A([Pengguna]) --> B[Buka Aplikasi]
+    B --> C{Session Cookie\nValid?}
+    C -- Tidak --> D[Halaman Landing\nindex.vue]
+    D --> E[Modal Login / Register]
+    E --> F{Aksi}
+    F -- Login --> G[POST /api/auth/login]
+    F -- Register --> H[POST /api/auth/register]
+    G --> I[(PostgreSQL\ntabel users)]
+    H --> I
+    I --> J{Kredensial Valid?}
+    J -- Tidak --> E
+    J -- Ya --> K[Set Session Cookie\nnuxt-auth-utils]
+    K --> L[/dashboard]
+    C -- Ya --> L
+
+    L --> M[GET /api/dashboard/stats]
+    M --> I
+    I --> N[Tampilkan Chart\n& Statistik]
+
+    L --> O{Pilih Fitur}
+    O --> P[/prediksi]
+    O --> Q[/rekomendasi]
+
+    P --> R[Isi Form:\nnama, kategori,\nharga, rating]
+    R --> S[POST /api/predict]
+    S --> T[POST Flask API\n/predict]
+    T --> U{Input Valid?}
+    U -- Tidak --> V[Error 422\nSaran perbaikan]
+    V --> R
+    U -- Ya --> W[Text Preprocessing\n+ TF-IDF + ML Inference]
+    W --> X[Response:\nprobabilitas + kompetitor\n+ narasi alasan]
+    X --> S
+    S --> Y[POST /api/predictions/save]
+    Y --> I
+    S --> Z[Tampilkan Hasil\ndi prediksi.vue]
+
+    Z --> AA{Lanjut ke\nRekomendasi?}
+    AA -- Ya --> AB[sessionStorage\nrekomendasiFromPrediksi]
+    AB --> Q
+
+    Q --> AC[Isi / Auto-fill Form]
+    AC --> AD[POST /api/recommendations/analyze]
+    AD --> AE[Query Kompetitor\ndari tabel products]
+    AE --> I
+    I --> AF[Hitung Benchmark\navg harga, rating, terjual]
+    AF --> AG[Analisis 4 Strategi:\nHarga, Rating,\nKompetisi, Marketing]
+    AG --> AH[Hitung Skor 0-100\n+ Generate KPI]
+    AH --> AI[Tampilkan Hasil\ndi rekomendasi.vue]
+    AI --> AJ[Download PDF\nwindow.print]

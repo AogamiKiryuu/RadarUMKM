@@ -1,0 +1,29 @@
+flowchart TD
+    U(["Pengguna"])
+    DB_RECOM[("business_recommendations")]
+    DB_PROD[("products")]
+
+    U -- "nama, kategori,\nsubKategori, harga, rating" --> P31
+
+    subgraph P3 ["Proses 3.0 — Rekomendasi Bisnis"]
+        P31["3.1\nValidasi Input\n& Auth Check"]
+        P32["3.2\nQuery Kompetitor\nprisma.product.findMany\nLIMIT 50"]
+        P33["3.3\nFilter Sub-Kategori\natau Fallback Kategori"]
+        P34["3.4\nHitung Benchmark Pasar\navgHarga, avgRating, avgTerjual"]
+        P35["3.5\nAnalisis 4 Strategi\nHarga, Rating, Kompetisi, Marketing"]
+        P36["3.6\nHitung Skor 0-100\n& Label Peluang"]
+        P37["3.7\nGenerate KPI Target"]
+        P38["3.8\nSimpan & Kirim Response"]
+    end
+
+    P31 -- "valid + authorized" --> P32
+    P31 -- "Error 401/400" --> U
+    P32 -- "WHERE kategori = X\nORDER BY terjual DESC" --> DB_PROD
+    DB_PROD -- "pool kompetitor" --> P33
+    P33 -- "pool final maks 20 produk" --> P34
+    P34 -- "benchmark metrics" --> P35
+    P35 -- "status ok/warning/danger\nper strategi" --> P36
+    P36 -- "skor + label" --> P37
+    P37 -- "KPI bulanan" --> P38
+    P38 -- "insert ke DB" --> DB_RECOM
+    P38 -- "skor + strategies + kpis\n+ topSeller + similarProducts" --> U

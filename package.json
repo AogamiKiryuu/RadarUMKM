@@ -36,6 +36,7 @@
     "wordcloud": "^1.2.3"
   },
   "devDependencies": {
+    "@types/pg": "^8.16.0",
     "dotenv": "^17.3.1"
   }
 }

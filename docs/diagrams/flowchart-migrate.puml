@@ -1,0 +1,49 @@
+@startuml flowchart-migrate
+skinparam style strictuml
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #1B4332
+skinparam ActivityBorderColor #1B4332
+skinparam ActivityBackgroundColor #D8F3DC
+
+title Flowchart Auto-Migration & Seeding\n(server/plugins/migrate.ts)
+
+start
+
+:Nitro Plugin onRequest;
+
+if (NODE_ENV == production?) then (Tidak)
+  :Skip — dev mode;
+  stop
+else (Ya)
+  :Koneksi Pool PostgreSQL;
+  :CREATE TABLE IF NOT EXISTS\n_prisma_migrations;
+  :Baca semua folder di\nprisma/migrations/;
+
+  repeat
+    :Ambil satu migration folder;
+    if (Ada di _prisma_migrations\nDAN finished_at IS NOT NULL?) then (Ya)
+      :Skip migration ini;
+    else (Tidak)
+      :Eksekusi migration.sql;
+      :Upsert ke _prisma_migrations\nfinished_at = NOW();
+    endif
+  repeat while (masih ada migration folder?)
+
+  :Cek COUNT(*) FROM products;
+
+  if (products > 0?) then (Ya)
+    :Skip seeding;
+  else (Tidak)
+    :Baca data/processed/\ndataset_umkm_bogor.csv;
+    :Proses per baris;
+    repeat
+      :INSERT batch 50 produk;
+    repeat while (masih ada baris CSV?)
+    :Log total produk seeded;
+  endif
+
+  :Release pool;
+endif
+
+stop
+@enduml

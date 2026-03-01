@@ -1,0 +1,30 @@
+flowchart TD
+    U(["Pengguna"])
+    DB_USER[("users")]
+
+    U -- "email + password" --> P11
+
+    subgraph P1 ["Proses 1.0 — Autentikasi"]
+        P11["1.1\nTerima Request\nPOST /api/auth/login\natau /register"]
+        P12["1.2\nValidasi Input\nnama, email, password"]
+        P13["1.3\nCek User di DB\nprisma.user.findUnique"]
+        P14["1.4\nVerifikasi Password\nbcrypt.compare"]
+        P15["1.5\nBuat Session\nsetUserSession"]
+        P16["1.6\nHapus Session\nclearUserSession\nDELETE /api/auth/logout"]
+    end
+
+    P11 --> P12
+    P12 -- "valid" --> P13
+    P12 -- "invalid" --> ERR1["Error 400"]
+    ERR1 --> U
+    P13 <-- "query / insert" --> DB_USER
+    P13 -- "user tidak ada" --> ERR2["Error 401"]
+    ERR2 --> U
+    P13 -- "user ditemukan" --> P14
+    P14 -- "password salah" --> ERR3["Error 401"]
+    ERR3 --> U
+    P14 -- "password cocok" --> P15
+    P15 -- "session cookie" --> U
+
+    U -- "request logout" --> P16
+    P16 -- "hapus session" --> U

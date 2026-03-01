@@ -1,0 +1,50 @@
+flowchart TD
+    ENTRY(["Buka URL"]) --> AUTH_CHECK{Session\nCookie Valid?}
+    AUTH_CHECK -- Tidak --> INDEX
+    AUTH_CHECK -- Ya --> DASH
+
+    subgraph PUBLIC ["Area Publik"]
+        INDEX["/ index.vue\nLanding Page"]
+        INDEX --> MODAL_AUTH["Modal Auth\nLogin / Register"]
+        MODAL_AUTH --> |"POST /api/auth/login"| LOGIN_API["login.post.ts"]
+        MODAL_AUTH --> |"POST /api/auth/register"| REG_API["register.post.ts"]
+        LOGIN_API -- "Sukses" --> DASH
+        REG_API -- "Sukses" --> DASH
+    end
+
+    subgraph PRIVATE ["Area Privat - auth middleware"]
+        DASH["/dashboard\ndashboard.vue"]
+        PREDIKSI["/prediksi\nprediksi.vue"]
+        REKOMENDASI["/rekomendasi\nrekomendasi.vue"]
+    end
+
+    subgraph SIDEBAR ["Layout default.vue — Sidebar"]
+        SB_DASH["Nav: Dashboard"]
+        SB_PRED["Nav: Prediksi Tren"]
+        SB_RECOM["Nav: Rekomendasi"]
+        SB_OUT["Tombol Logout"]
+    end
+
+    DASH --> SB_PRED --> PREDIKSI
+    DASH --> SB_RECOM --> REKOMENDASI
+    PREDIKSI --> SB_DASH --> DASH
+    PREDIKSI --> SB_RECOM
+    REKOMENDASI --> SB_DASH
+    REKOMENDASI --> SB_PRED
+    SB_OUT --> |"DELETE /api/auth/logout"| INDEX
+
+    DASH --> |"GET /api/dashboard/stats"| DA_STATS["stats.get.ts\nAgregat products + prediksi"]
+
+    PREDIKSI --> PRED_FORM["Form Input Produk"]
+    PRED_FORM --> |"POST /api/predict"| PRED_API["predict.post.ts\n-> Flask /predict"]
+    PRED_API --> PRED_RESULT["Hasil Prediksi\nSkor + Kompetitor + Narasi"]
+    PRED_RESULT --> |"sessionStorage" | REKOMENDASI
+    PRED_RESULT --> |"localStorage"| PRED_HISTORY["Riwayat Terakhir"]
+    PRED_RESULT --> |"POST /api/predictions/save"| PRED_SAVE["save.post.ts\n-> DB predictions"]
+
+    REKOMENDASI --> RECOM_FORM["Form Input\nauto-fill dari sessionStorage"]
+    RECOM_FORM --> |"POST /api/recommendations/analyze"| RECOM_API["analyze.post.ts\n-> Query DB products"]
+    RECOM_API --> RECOM_RESULT["Hasil Analisis\nSkor + Strategi + KPI"]
+    RECOM_RESULT --> |"window.print"| PDF["Download PDF"]
+    RECOM_RESULT --> |"Reset form"| RECOM_FORM
+    RECOM_RESULT --> |"POST /api/recommendations/save"| RECOM_SAVE["save.post.ts\n-> DB business_recommendations"]

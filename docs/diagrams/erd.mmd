@@ -1,0 +1,56 @@
+erDiagram
+    users {
+        string id PK "uuid DEFAULT uuid()"
+        string email UK "UNIQUE NOT NULL"
+        string password "bcrypt hash NOT NULL"
+        string name "NOT NULL"
+        timestamptz createdAt "DEFAULT now()"
+        timestamptz updatedAt "auto updatedAt"
+    }
+
+    products {
+        string id PK "uuid DEFAULT uuid()"
+        string namaProduk "NOT NULL"
+        string kategori "NOT NULL"
+        string subKategori "NULLABLE"
+        int hargaProduk "NOT NULL Rupiah"
+        float rating "DEFAULT 0"
+        int jumlahTerjual "DEFAULT 0"
+        string namaToko "NULLABLE"
+        string url "NULLABLE"
+        int label "NULLABLE 0=Kurang 1=Menarik"
+        timestamptz createdAt "DEFAULT now()"
+        timestamptz updatedAt "auto updatedAt"
+    }
+
+    predictions {
+        string id PK "uuid DEFAULT uuid()"
+        string userId FK "NOT NULL -> users.id"
+        string namaProduk "NOT NULL"
+        string kategori "NOT NULL"
+        string subKategori "NULLABLE"
+        int hargaProduk "NOT NULL Rupiah"
+        float targetRating "NOT NULL"
+        float predictionScore "NOT NULL 0-100 persen"
+        int predictionLabel "NOT NULL 0 atau 1"
+        text insight "NULLABLE narasi alasan"
+        timestamptz createdAt "DEFAULT now()"
+    }
+
+    business_recommendations {
+        string id PK "uuid DEFAULT uuid()"
+        string userId FK "NOT NULL -> users.id"
+        string namaProduk "NOT NULL"
+        string kategori "NOT NULL"
+        string subKategori "NULLABLE"
+        int hargaProduk "NOT NULL Rupiah"
+        float targetRating "NOT NULL"
+        text similarProducts "NULLABLE JSON string kompetitor"
+        float avgHargaKompetitor "NULLABLE"
+        float avgRatingKompetitor "NULLABLE"
+        text recommendations "NOT NULL JSON hasil lengkap"
+        timestamptz createdAt "DEFAULT now()"
+    }
+
+    users ||--o{ predictions : "memiliki (onDelete Cascade)"
+    users ||--o{ business_recommendations : "memiliki (onDelete Cascade)"

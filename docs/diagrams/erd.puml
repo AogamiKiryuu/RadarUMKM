@@ -1,0 +1,90 @@
+@startuml erd
+skinparam linetype ortho
+skinparam backgroundColor #FAFAFA
+skinparam EntityBorderColor #2D6A4F
+skinparam EntityBackgroundColor #D8F3DC
+skinparam ArrowColor #1B4332
+
+title ERD — Prediksi Tren Pasar UMKM Bogor
+
+entity "users" as USER {
+  * id           : VARCHAR(36)   <<PK>> <<uuid>>
+  --
+  * email        : VARCHAR       <<UNIQUE>>
+  * password     : VARCHAR
+  * name         : VARCHAR
+  * createdAt    : TIMESTAMPTZ
+  * updatedAt    : TIMESTAMPTZ
+}
+
+entity "products" as PROD {
+  * id            : VARCHAR(36)        <<PK>> <<uuid>>
+  --
+  * namaProduk    : VARCHAR
+  * kategori      : VARCHAR
+  o subKategori   : VARCHAR
+  * hargaProduk   : INTEGER
+  * rating        : DOUBLE PRECISION
+  * jumlahTerjual : INTEGER
+  o namaToko      : VARCHAR
+  o url           : VARCHAR
+  o label         : INTEGER
+  * createdAt     : TIMESTAMPTZ
+  * updatedAt     : TIMESTAMPTZ
+}
+
+entity "predictions" as PRED {
+  * id               : VARCHAR(36)        <<PK>> <<uuid>>
+  --
+  * userId           : VARCHAR(36)        <<FK>>
+  * namaProduk       : VARCHAR
+  * kategori         : VARCHAR
+  o subKategori      : VARCHAR
+  * hargaProduk      : INTEGER
+  * targetRating     : DOUBLE PRECISION
+  * predictionScore  : DOUBLE PRECISION
+  * predictionLabel  : INTEGER
+  o insight          : TEXT
+  * createdAt        : TIMESTAMPTZ
+}
+
+entity "business_recommendations" as BRECOM {
+  * id                    : VARCHAR(36)        <<PK>> <<uuid>>
+  --
+  * userId                : VARCHAR(36)        <<FK>>
+  * namaProduk            : VARCHAR
+  * kategori              : VARCHAR
+  o subKategori           : VARCHAR
+  * hargaProduk           : INTEGER
+  * targetRating          : DOUBLE PRECISION
+  o similarProducts       : TEXT
+  o avgHargaKompetitor    : DOUBLE PRECISION
+  o avgRatingKompetitor   : DOUBLE PRECISION
+  * recommendations       : TEXT
+  * createdAt             : TIMESTAMPTZ
+}
+
+entity "_prisma_migrations" as MIGRATE {
+  * id                   : VARCHAR(36)   <<PK>>
+  --
+  * checksum             : VARCHAR(64)
+  * migration_name       : VARCHAR(255)
+  o finished_at          : TIMESTAMPTZ
+  o logs                 : TEXT
+  o rolled_back_at       : TIMESTAMPTZ
+  * started_at           : TIMESTAMPTZ
+  * applied_steps_count  : INTEGER
+}
+
+USER ||--o{ PRED   : "userId (ON DELETE CASCADE)"
+USER ||--o{ BRECOM : "userId (ON DELETE CASCADE)"
+
+note right of PROD
+  Dataset produk marketplace
+  (Tokopedia, Shopee, Lazada)
+  Sumber: data/processed/dataset_umkm_bogor.csv
+  Tidak ada foreign key ke tabel lain.
+  Diquery oleh /api/recommendations/analyze
+  sebagai pool kompetitor.
+end note
+@enduml

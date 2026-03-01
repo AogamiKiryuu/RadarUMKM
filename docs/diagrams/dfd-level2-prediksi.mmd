@@ -1,0 +1,24 @@
+flowchart TD
+    U(["Pengguna"])
+    FLASK(["Flask API"])
+    DB_PRED[("predictions")]
+
+    U -- "nama, kategori,\nsubKategori, harga, rating" --> P21
+
+    subgraph P2 ["Proses 2.0 — Prediksi Tren"]
+        P21["2.1\nValidasi Input\nNuxt Server"]
+        P22["2.2\nForward ke Flask\n$fetch POST /predict"]
+        P23["2.3\nTerima & Petakan\nResponse Flask"]
+        P24["2.4\nSimpan ke DB\nPOST /api/predictions/save"]
+        P25["2.5\nKirim Hasil\nke Client Vue"]
+    end
+
+    P21 -- "valid" --> P22
+    P21 -- "Error 400" --> U
+    P22 -- "nama, kategori,\nharga, rating" --> FLASK
+    FLASK -- "kesimpulan, peluang_laku_persen,\nalasan, kompetitor[]" --> P23
+    FLASK -- "Error 422 warning/error" --> P21
+    P23 --> P24
+    P23 --> P25
+    P24 -- "insert prediction record" --> DB_PRED
+    P25 -- "hasil prediksi + kompetitor" --> U

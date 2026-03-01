@@ -1,0 +1,22 @@
+@startuml dfd-context
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #1B4332
+skinparam ActorBorderColor #2D6A4F
+
+title DFD Level 0 — Context Diagram
+
+actor "Pengguna\nUMKM Bogor" as USER
+actor "Flask ML API\n(Render.com)" as FLASK
+actor "Dataset CSV\nUMKM Bogor" as CSV
+
+rectangle "Sistem RadarUMKMBogor\n(Nuxt · Railway)" as SYS
+
+database "PostgreSQL\n(Railway)" as DB
+
+USER  --> SYS  : data produk\n(nama, kategori, harga, rating)
+SYS   --> USER : hasil prediksi\n+ rekomendasi bisnis
+SYS   --> FLASK: request ML inference
+FLASK --> SYS  : probabilitas + kompetitor\n+ narasi alasan
+SYS  <-> DB    : baca / tulis data
+CSV   --> DB   : seed dataset awal
+@enduml

@@ -51,15 +51,15 @@ async function main() {
 
     await prisma.product.createMany({
       data: batch.map((row) => ({
-        namaProduk:   row['nama_produk']   || '',
-        kategori:     row['kategori']      || '',
-        subKategori:  row['sub_kategori']  || null,
-        hargaProduk:  parseInt(row['harga_produk'])   || 0,
-        jumlahTerjual:parseInt(row['jumlah_terjual']) || 0,
-        rating:       parseFloat(row['rating'])       || 0.0,
-        namaToko:     row['nama_toko']     || null,
-        url:          row['url_produk']    || null,
-        label:        row['label'] !== '' ? parseInt(row['label']) : null,
+        namaProduk: row['nama_produk'] || '',
+        kategori: row['kategori'] || '',
+        subKategori: row['sub_kategori'] || null,
+        hargaProduk: parseInt(row['harga_produk']) || 0,
+        jumlahTerjual: parseInt(row['jumlah_terjual']) || 0,
+        rating: parseFloat(row['rating']) || 0.0,
+        namaToko: row['nama_toko'] || null,
+        url: row['url_produk'] || null,
+        label: row['label'] !== '' ? parseInt(row['label']) : null,
       })),
       skipDuplicates: true,
     });

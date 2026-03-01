@@ -1,0 +1,44 @@
+flowchart TD
+    A[Input: nama, kategori,\nsubKategori, harga, rating] --> B[Query DB\nmaks 50 produk / kategori\nORDER BY jumlahTerjual DESC]
+    B --> C{subKategori >= 5\nhasil?}
+    C -- Ya --> D[Gunakan subKategori\nmaks 20 produk]
+    C -- Tidak --> E[Fallback ke kategori\nmaks 20 produk]
+    D & E --> F[Pool Kompetitor Final]
+
+    F --> G[Hitung Benchmark:\navgHarga, avgRating,\navgTerjual, priceMin, priceMax]
+
+    G --> H[Strategi Harga]
+    H --> H1{priceDiffPct}
+    H1 -- "harga > +25% rata-rata" --> H2[danger]
+    H1 -- "harga < -20% rata-rata" --> H3[warning]
+    H1 -- dalam batas wajar --> H4[ok]
+
+    G --> I[Strategi Rating]
+    I --> I1{ratingDiff}
+    I1 -- rating = 0 --> I2[warning: kesan pertama]
+    I1 -- "diff < -0.5" --> I3[danger]
+    I1 -- "diff -0.5 ke 0" --> I4[warning]
+    I1 -- ">= rata-rata" --> I5[ok]
+
+    G --> J[Strategi Kompetisi]
+    J --> J1{total kompetitor}
+    J1 -- "<= 10" --> J2[ok: pasar masih terbuka]
+    J1 -- "11-30" --> J3[warning: mulai ramai]
+    J1 -- "> 30" --> J4[danger: sangat kompetitif]
+
+    G --> K[Strategi Marketing]
+    K --> K1[ok: checklist standar marketing]
+
+    H2 & H3 & H4 --> L[Akumulasi Skor]
+    I2 & I3 & I4 & I5 --> L
+    J2 & J3 & J4 --> L
+    K1 --> L
+
+    L --> M[Skor Final 0-100]
+    M --> N{Label Peluang}
+    N -- ">= 75" --> O[Peluang Tinggi]
+    N -- "55-74" --> P[Peluang Moderat]
+    N -- "< 55" --> Q[Perlu Persiapan Lebih]
+
+    O & P & Q --> R[Hitung KPI Target\ntargetBulanan, frekuensiPromo, dll]
+    R --> S[Response JSON:\nskor + strategies + kpis\n+ topSeller + similarProducts]
