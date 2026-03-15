@@ -8,13 +8,13 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { namaProduk, kategori, subKategori, hargaProduk, targetRating } = await readBody(event);
+  const { namaProduk, kategori, subKategori, hargaProduk } = await readBody(event);
 
   // Validation
-  if (!namaProduk || !kategori || !hargaProduk || targetRating === undefined) {
+  if (!namaProduk || !kategori || !hargaProduk) {
     throw createError({
       statusCode: 400,
-      message: 'Data tidak lengkap. Pastikan nama produk, kategori, harga, dan rating terisi.',
+      message: 'Data tidak lengkap. Pastikan nama produk, kategori, dan harga terisi.',
     });
   }
 
@@ -30,7 +30,6 @@ export default defineEventHandler(async (event) => {
         kategori,
         sub_kategori: subKategori ?? '',
         harga_produk: hargaProduk,
-        rating: targetRating,
       },
     });
   } catch (err: any) {
@@ -65,9 +64,10 @@ export default defineEventHandler(async (event) => {
   const predictionScore: number = flaskData.peluang_laku_persen ?? 0;
   const predictionLabel: number = predictionScore >= 50 ? 1 : 0;
   const kesimpulan: string = flaskData.kesimpulan ?? '';
-  const alasan: string = flaskData.alasan ?? '';
-
-  const insight = `${kesimpulan}\n\n${alasan}`;
+  // Flask sekarang mengembalikan alasan sebagai array of string
+  const alasan: string[] = Array.isArray(flaskData.alasan)
+    ? flaskData.alasan
+    : [flaskData.alasan ?? ''];
 
   const similarProducts = (flaskData.kompetitor ?? []).map((k: any) => ({
     nama_produk: k.nama,
@@ -84,7 +84,6 @@ export default defineEventHandler(async (event) => {
     predictionLabel,
     kesimpulan,
     alasan,
-    insight,
     similarProducts,
   };
 });

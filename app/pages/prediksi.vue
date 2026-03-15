@@ -45,9 +45,6 @@
               <UFormField label="Harga Produk (Rp)">
                 <UInput v-model.number="form.hargaProduk" type="number" placeholder="50000" icon="i-heroicons-banknotes" class="w-full" />
               </UFormField>
-              <UFormField label="Target Rating (0–5)">
-                <UInput v-model.number="form.targetRating" type="number" step="0.1" min="0" max="5" placeholder="4.5" icon="i-heroicons-star" class="w-full" />
-              </UFormField>
 
               <UButton type="submit" block :loading="loading" color="primary" size="lg" class="!mt-5 font-semibold">
                 <template #leading><UIcon name="i-heroicons-bolt" /></template>
@@ -145,14 +142,13 @@
               <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full" />
               <div class="absolute -right-4 bottom-4 w-20 h-20 bg-white/5 rounded-full" />
               <div class="relative z-10">
-                <p class="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">Skor Daya Tarik</p>
+                <p class="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">Peluang Produk Laku</p>
                 <div class="flex items-end gap-3 mb-3">
                   <span class="text-6xl font-extrabold leading-none tracking-tight">{{ result.predictionScore.toFixed(1) }}</span>
-                  <span class="text-2xl font-medium mb-1 text-white/80">/ 100</span>
+                  <span class="text-2xl font-medium mb-1 text-white/80">%</span>
                 </div>
                 <div class="flex items-center gap-2 mb-4">
-                  <span class="text-lg">{{ getKesimpulanEmoji(result.kesimpulan) }}</span>
-                  <span class="font-bold text-base">{{ result.kesimpulan }}</span>
+                  <span class="font-semibold text-sm">{{ getKesimpulanLabel(result.kesimpulan) }}</span>
                 </div>
                 <!-- Progress bar -->
                 <div class="bg-white/20 rounded-full h-2">
@@ -170,7 +166,16 @@
                 <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Analisis Model</h3>
               </div>
               <div class="p-5">
-                <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">{{ result.alasan || result.insight }}</p>
+                <ul class="space-y-2">
+                  <li
+                    v-for="(poin, i) in (Array.isArray(result.alasan) ? result.alasan : [result.alasan])"
+                    :key="i"
+                    class="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300 leading-relaxed"
+                  >
+                    <span class="mt-0.5 w-1.5 h-1.5 rounded-full bg-yellow-400 shrink-0" />
+                    <span>{{ poin }}</span>
+                  </li>
+                </ul>
               </div>
             </div>
 
@@ -224,20 +229,6 @@
             </div>
           </template>
 
-          <!-- Target Rating Info — always visible -->
-          <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl p-4">
-            <div class="flex gap-2.5">
-              <UIcon name="i-heroicons-information-circle" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-              <div>
-                <p class="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-1">Apa itu Target Rating?</p>
-                <p class="text-xs text-blue-600 dark:text-blue-400 leading-relaxed">
-                  <strong>Target Rating</strong> adalah estimasi nilai kepuasan pembeli (0–5 ⭐) yang ingin kamu capai untuk produkmu.
-                  Jika belum punya toko online, isi <strong>0</strong> atau masukkan target yang kamu harapkan (misal: <strong>4.5</strong> untuk kualitas premium).
-                  Model akan membandingkan produkmu dengan kompetitor yang memiliki rating serupa di pasar.
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -251,7 +242,7 @@ const router = useRouter();
 const toast = useToast();
 
 const loading = ref(false);
-const form = ref({ namaProduk: '', kategori: '', subKategori: '', hargaProduk: 0, targetRating: 4.5 });
+const form = ref({ namaProduk: '', kategori: '', subKategori: '', hargaProduk: 0 });
 const result = ref<any>(null);
 const prediksiError = ref<string | null>(null);
 
@@ -270,11 +261,11 @@ watch(() => form.value.kategori, () => { form.value.subKategori = ''; });
 
 const formatNumber = (num: number) => num?.toLocaleString('id-ID') ?? '0';
 
-const getKesimpulanEmoji = (kesimpulan: string) => {
+const getKesimpulanLabel = (kesimpulan: string) => {
   if (!kesimpulan) return '';
-  if (kesimpulan.includes('SANGAT')) return '🌟';
-  if (kesimpulan.includes('CUKUP')) return '✅';
-  return '⚠️';
+  if (kesimpulan.includes('SANGAT')) return '🌟 Sangat Menarik';
+  if (kesimpulan.includes('CUKUP')) return '✅ Cukup Menarik';
+  return '⚠️ Kurang Menarik';
 };
 
 const handlePrediksi = async () => {
@@ -311,7 +302,7 @@ const saveHistory = () => {
 };
 
 const loadFromHistory = async (item: any) => {
-  form.value = { namaProduk: item.namaProduk, kategori: item.kategori, subKategori: '', hargaProduk: item.hargaProduk, targetRating: item.targetRating };
+  form.value = { namaProduk: item.namaProduk, kategori: item.kategori, subKategori: '', hargaProduk: item.hargaProduk };
   await nextTick(); // tunggu watch kategori selesai clear subKategori
   form.value.subKategori = item.subKategori || '';
   result.value = null;

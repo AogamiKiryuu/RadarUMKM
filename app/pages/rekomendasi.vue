@@ -41,9 +41,6 @@
               <UFormField label="Harga Produk (Rp)">
                 <UInput v-model.number="form.hargaProduk" type="number" placeholder="50000" icon="i-heroicons-banknotes" class="w-full" />
               </UFormField>
-              <UFormField label="Target Rating (0-5)">
-                <UInput v-model.number="form.targetRating" type="number" step="0.1" min="0" max="5" placeholder="4.5" icon="i-heroicons-star" class="w-full" />
-              </UFormField>
               <UButton type="submit" block :loading="loading" color="primary" size="lg" class="!mt-5 font-semibold">
                 <template #leading><UIcon name="i-heroicons-light-bulb" /></template>
                 Analisis Sekarang
@@ -107,8 +104,8 @@
             <div :class="scoreBannerClass" class="rounded-2xl p-5 text-white">
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-xs font-semibold opacity-80 uppercase tracking-wider mb-1">Skor Peluang Bisnis</p>
-                  <p class="text-4xl font-black">{{ result.score }}<span class="text-xl font-semibold opacity-70">/100</span></p>
+                  <p class="text-xs font-semibold opacity-80 uppercase tracking-wider mb-1">Peluang Bisnis</p>
+                  <p class="text-4xl font-black">{{ result.score }}<span class="text-xl font-semibold opacity-70">%</span></p>
                   <p class="text-sm font-semibold mt-1 opacity-90">{{ result.scoreLabel }}</p>
                 </div>
                 <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
@@ -135,8 +132,9 @@
                   <p class="text-sm font-bold text-emerald-700 dark:text-emerald-300">Rp {{ formatNumber(result.avgHargaKompetitor || 0) }}</p>
                 </div>
                 <div class="text-center p-3 bg-amber-50 dark:bg-amber-900/10 rounded-xl">
-                  <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-1 font-medium">Target Rating</p>
-                  <p class="text-sm font-bold text-amber-700 dark:text-amber-300">{{ form.targetRating }} ⭐</p>
+                  <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-1 font-medium">Rating Kamu</p>
+                  <p class="text-sm font-bold text-amber-700 dark:text-amber-300">{{ result.avgRatingKompetitor?.toFixed(1) || '—' }} ⭐</p>
+                  <p class="text-[10px] text-gray-400 mt-0.5">dari kompetitor</p>
                 </div>
                 <div class="text-center p-3 bg-purple-50 dark:bg-purple-900/10 rounded-xl">
                   <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-1 font-medium">Rating Pasar</p>
@@ -288,7 +286,7 @@ definePageMeta({ middleware: 'auth' });
 const toast = useToast();
 
 const loading = ref(false);
-const form = ref({ namaProduk: '', kategori: '', subKategori: '', hargaProduk: 0, targetRating: 4.5 });
+const form = ref({ namaProduk: '', kategori: '', subKategori: '', hargaProduk: 0 });
 const result = ref<any>(null);
 const analisisError = ref<string | null>(null);
 const fromPrediksi = ref(false);
@@ -298,7 +296,7 @@ onMounted(async () => {
     const stored = sessionStorage.getItem('rekomendasiFromPrediksi');
     if (stored) {
       const data = JSON.parse(stored);
-      form.value = { namaProduk: data.namaProduk || '', kategori: data.kategori || '', subKategori: '', hargaProduk: data.hargaProduk || 0, targetRating: data.targetRating ?? 4.5 };
+      form.value = { namaProduk: data.namaProduk || '', kategori: data.kategori || '', subKategori: '', hargaProduk: data.hargaProduk || 0 };
       sessionStorage.removeItem('rekomendasiFromPrediksi');
       await nextTick(); // tunggu watch kategori selesai clear subKategori
       form.value.subKategori = data.subKategori || '';
@@ -384,7 +382,7 @@ const resetForm = () => {
   result.value = null;
   analisisError.value = null;
   fromPrediksi.value = false;
-  form.value = { namaProduk: '', kategori: '', subKategori: '', hargaProduk: 0, targetRating: 4.5 };
+  form.value = { namaProduk: '', kategori: '', subKategori: '', hargaProduk: 0 };
 };
 </script>
 

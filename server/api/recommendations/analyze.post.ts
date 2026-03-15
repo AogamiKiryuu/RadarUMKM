@@ -114,7 +114,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, message: 'Unauthorized' });
   }
 
-  const { namaProduk, kategori, subKategori, hargaProduk, targetRating } = await readBody(event);
+  const { namaProduk, kategori, subKategori, hargaProduk } = await readBody(event);
 
   // ── Validasi kesesuaian nama produk vs kategori ────────────────────────────
   const mismatchError = validateKategoriMatch(namaProduk ?? '', kategori ?? '');
@@ -183,36 +183,43 @@ export default defineEventHandler(async (event) => {
     ];
   }
 
-  // 5. Rating analysis
-  const ratingDiff = targetRating - avgRating;
+  // 5. Rating analysis — berbasis rata-rata kompetitor (user tidak input rating)
   let ratingStatus: 'ok' | 'warning' | 'danger';
   let ratingHeadline: string;
   let ratingActions: string[];
-  if (targetRating === 0) {
+  if (pool.length === 0) {
     ratingStatus = 'warning';
-    ratingHeadline = 'Produk belum memiliki rating — fokus pada kesan pertama pembeli';
+    ratingHeadline = 'Belum ada data kompetitor — fokus pada kesan pertama pembeli';
     ratingActions = [
       'Tawarkan insentif ulasan (cashback/voucher) untuk pembeli pertama',
       'Follow up pembeli 2-3 hari setelah pengiriman untuk minta review',
       'Pastikan packaging rapi agar kesan pertama sangat positif',
-      `Target minimal rating ${(avgRating + 0.3).toFixed(1)} dalam 30 hari pertama`,
+      'Target minimal rating 4.5 dalam 30 hari pertama',
     ];
-  } else if (ratingDiff < -0.3) {
-    ratingStatus = 'danger';
-    ratingHeadline = `Target rating Anda (${targetRating}) di bawah rata-rata pasar (${avgRating.toFixed(1)})`;
+  } else if (avgRating >= 4.5) {
+    ratingStatus = 'ok';
+    ratingHeadline = `Kompetitor di kategori ini memiliki rating tinggi (rata-rata ${avgRating.toFixed(1)}⭐)`;
     ratingActions = [
-      'Prioritaskan peningkatan kualitas produk sebelum launch skala besar',
-      'Perbaiki deskripsi agar ekspektasi pembeli sesuai produk nyata',
-      'Respon komplain dalam < 2 jam untuk menjaga kepuasan',
-      `Naikkan target ke minimal ${avgRating.toFixed(1)} agar bersaing`,
+      'Pertahankan kualitas produk agar bisa bersaing dengan kompetitor berrating tinggi',
+      'Respond ulasan negatif secara profesional dan tawarkan solusi',
+      'Gunakan rating tinggi kompetitor sebagai benchmark — targetkan minimal yang sama',
+      'Perhatikan foto & deskripsi produk agar kesan pertama sebaik kompetitor',
+    ];
+  } else if (avgRating >= 4.0) {
+    ratingStatus = 'ok';
+    ratingHeadline = `Rating pasar kompetitif di ${avgRating.toFixed(1)}⭐ — peluang untuk bersaing baik`;
+    ratingActions = [
+      'Target rating minimal sama dengan rata-rata pasar untuk stay competitive',
+      'Investasi pada kualitas packaging dan layanan purna jual',
+      'Minta review dari pelanggan puas secara aktif namun tidak memaksa',
     ];
   } else {
-    ratingStatus = 'ok';
-    ratingHeadline = `Target rating (${targetRating}) kompetitif dan di atas rata-rata pasar`;
+    ratingStatus = 'warning';
+    ratingHeadline = `Rata-rata rating pasar ${avgRating.toFixed(1)}⭐ — ada ruang untuk ungguli kompetitor`;
     ratingActions = [
-      'Pertahankan kualitas — jangan turunkan standar saat volume naik',
-      'Respond ulasan negatif secara profesional dan tawarkan solusi',
-      'Gunakan rating tinggi sebagai social proof di foto & deskripsi produk',
+      'Ini peluang! Produk berkualitas tinggi bisa langsung menonjol di pasar ini',
+      'Fokus pada kualitas produk dan layanan untuk dapatkan rating di atas rata-rata',
+      'Tawarkan garansi kepuasan agar pembeli percaya untuk mencoba produk baru',
     ];
   }
 
@@ -262,7 +269,7 @@ export default defineEventHandler(async (event) => {
   const targetBulananTerjual = Math.max(50, Math.round(avgTerjual * 0.3));
   const kpis = [
     { metric: 'Target Penjualan', target: `${targetBulananTerjual}–${targetBulananTerjual * 2} unit/bulan`, icon: 'i-heroicons-shopping-bag', color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20' },
-    { metric: 'Target Rating', target: `≥ ${Math.max(targetRating, avgRating).toFixed(1)} ⭐`, icon: 'i-heroicons-star', color: 'text-amber-500 bg-amber-50 dark:bg-amber-900/20' },
+    { metric: 'Target Rating', target: `≥ ${avgRating.toFixed(1)} ⭐`, icon: 'i-heroicons-star', color: 'text-amber-500 bg-amber-50 dark:bg-amber-900/20' },
     { metric: 'Response Rate', target: '> 90%', icon: 'i-heroicons-chat-bubble-left-right', color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' },
     { metric: 'Return Rate', target: '< 5%', icon: 'i-heroicons-arrow-uturn-left', color: 'text-red-500 bg-red-50 dark:bg-red-900/20' },
   ];
