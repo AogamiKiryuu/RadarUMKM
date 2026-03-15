@@ -249,8 +249,8 @@ const prediksiError = ref<string | null>(null);
 const kategoris = ['Makanan', 'Minuman', 'Pakaian & Fashion', 'Aksesoris & Souvenir'];
 
 const subKategoriMap: Record<string, string[]> = {
-  'Makanan': ['Camilan & Snack', 'Kue & Roti', 'Lauk & Bahan Makanan', 'Buah & Bahan Mentah Segar', 'Oleh-oleh Umum'],
-  'Minuman': ['Kopi', 'Teh', 'Minuman Herbal & Seduh', 'Susu & Minuman Lainnya'],
+  'Makanan': ['Camilan & Snack', 'Kue & Roti', 'Lauk & Bahan Makanan', 'Buah & Bahan Mentah Segar'],
+  'Minuman': ['Kopi', 'Teh', 'Minuman Herbal & Seduh'],
   'Pakaian & Fashion': ['Atasan & Pakaian Kasual', 'Pakaian Tradisional & Etnik', 'Pakaian Anak'],
   'Aksesoris & Souvenir': ['Aksesoris & Souvenir'],
 };
