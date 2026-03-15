@@ -122,19 +122,65 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 422, message: mismatchError });
   }
 
-  // 1. Find competitor products in same category
-  const competitors = await prisma.product.findMany({
-    where: { kategori },
-    orderBy: { jumlahTerjual: 'desc' },
-    take: 50,
-  });
+  // 1. Dapatkan competitor dari Flask ML API (Cosine Similarity)
+  const config = useRuntimeConfig();
+  let pool: any[] = [];
+  let flaskError = false;
 
-  // 2. Closer competitors by sub-category
-  const closeCompetitors = subKategori
-    ? competitors.filter((p) => p.subKategori === subKategori).slice(0, 20)
-    : competitors.slice(0, 20);
+  try {
+    const flaskData: any = await $fetch(`${config.flaskApiUrl}/predict`, {
+      method: 'POST',
+      body: {
+        nama_produk: namaProduk,
+        kategori,
+        sub_kategori: subKategori ?? '',
+        harga_produk: hargaProduk,
+      },
+    });
 
-  const pool = closeCompetitors.length >= 5 ? closeCompetitors : competitors.slice(0, 20);
+    if (flaskData.kompetitor && flaskData.kompetitor.length > 0) {
+      // Petakan dari format Flask ke format yang dipakai kalkulasi di bawah
+      pool = flaskData.kompetitor.map((k: any) => ({
+        namaProduk: k.nama,
+        namaToko: k.marketplace,
+        url: k.url_produk,
+        hargaProduk: k.harga,
+        rating: k.rating,
+        jumlahTerjual: k.terjual,
+        kemiripan_persen: k.kemiripan_persen,
+      }));
+    }
+  } catch (err: any) {
+    const flaskBody = err?.data ?? err?.response?._data;
+    if (flaskBody?.status === 'warning' || flaskBody?.status === 'error') {
+      // PENTING: Penyelarasan dengan prediction -> teruskan validasi pintar Flask ke frontend
+      // (misalnya jika produk terdeteksi bukan khas Bogor, dsb)
+      throw createError({
+        statusCode: 422,
+        message: flaskBody.message as string,
+      });
+    }
+
+    // Tangkap error jika Flask mati secara teknis (koneksi terputus, dll)
+    console.error('⚠️ Flask API error di Recommendations:', err?.message ?? err);
+    flaskError = true;
+  }
+
+  // 2. FALLBACK: Jika Flask gagal atau tidak nemu kompetitor (>0.05 similarity),
+  // gunakan cara lama: query Prisma
+  if (pool.length === 0) {
+    const competitors = await prisma.product.findMany({
+      where: { kategori },
+      orderBy: { jumlahTerjual: 'desc' },
+      take: 50,
+    });
+
+    const closeCompetitors = subKategori
+      ? competitors.filter((p) => p.subKategori === subKategori).slice(0, 20)
+      : competitors.slice(0, 20);
+
+    pool = closeCompetitors.length >= 5 ? closeCompetitors : competitors.slice(0, 20);
+  }
 
   // 3. Market metrics
   const avgHarga = pool.length
@@ -224,7 +270,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // 6. Competition analysis
-  const totalKompetitor = competitors.length;
+  const totalKompetitor = pool.length;
   let competitionStatus: 'ok' | 'warning' | 'danger';
   let competitionHeadline: string;
   let competitionActions: string[];
