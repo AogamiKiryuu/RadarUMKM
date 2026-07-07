@@ -33,6 +33,12 @@ export default defineNuxtConfig({
     },
   },
 
+  icon: {
+    serverBundle: {
+      collections: ['heroicons'],
+    },
+  },
+
   nitro: {
     externals: {
       external: ['pg', 'csv-parse'],

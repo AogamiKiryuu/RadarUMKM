@@ -116,6 +116,19 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  // ── Kategori Paling Digemari (agregasi total penjualan per kategori) ────
+  const categoryTrend = await prisma.product.groupBy({
+    by: ['kategori'],
+    _sum: { jumlahTerjual: true },
+    _count: true,
+    orderBy: { _sum: { jumlahTerjual: 'desc' } },
+  });
+  const categoryTrendData = categoryTrend.map((c) => ({
+    kategori: c.kategori,
+    totalTerjual: c._sum.jumlahTerjual ?? 0,
+    jumlahProduk: c._count,
+  }));
+
   return {
     stats: {
       totalProducts,
@@ -127,6 +140,7 @@ export default defineEventHandler(async (event) => {
     topKeywords,
     marketplaceDistribution: marketplaceCounts,
     topProductsByMarketplace,
+    categoryTrend: categoryTrendData,
     charts: {
       topProducts: {
         labels: topProducts.map((p) => p.namaProduk.substring(0, 30)),

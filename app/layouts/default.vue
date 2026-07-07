@@ -154,7 +154,6 @@ const toggleRail = () => {
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: 'i-heroicons-home' },
   { to: '/prediksi', label: 'Prediksi Tren', icon: 'i-heroicons-arrow-trending-up' },
-  { to: '/rekomendasi', label: 'Rekomendasi', icon: 'i-heroicons-light-bulb' },
 ];
 
 const isActive = (path: string) => route.path === path;

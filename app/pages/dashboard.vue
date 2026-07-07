@@ -169,6 +169,69 @@
         </div>
       </div>
 
+      <!-- Kategori Paling Digemari Secara Keseluruhan -->
+      <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+        <div class="flex items-center gap-2 mb-5">
+          <div class="p-1.5 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
+            <UIcon name="i-heroicons-fire" class="w-3.5 h-3.5 text-rose-500" />
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Kategori Paling Digemari Secara Keseluruhan</h3>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Berdasarkan total unit terjual dari semua kategori</p>
+          </div>
+        </div>
+        <div v-if="loadingData" class="space-y-3">
+          <div v-for="i in 5" :key="i" class="animate-pulse flex items-center gap-3">
+            <div class="w-6 h-4 bg-gray-100 dark:bg-gray-800 rounded" />
+            <div class="flex-1 space-y-1.5">
+              <div class="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/3" />
+              <div class="h-2 bg-gray-100 dark:bg-gray-800 rounded w-full" />
+            </div>
+            <div class="w-24 h-3 bg-gray-100 dark:bg-gray-800 rounded" />
+          </div>
+        </div>
+        <div v-else class="space-y-3">
+          <div
+            v-for="(cat, idx) in categoryTrend"
+            :key="cat.kategori"
+            class="flex items-center gap-3 group"
+          >
+            <!-- Rank badge -->
+            <span
+              :class="[
+                'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0',
+                idx === 0 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' :
+                idx === 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500' :
+                idx === 2 ? 'bg-orange-100 dark:bg-orange-900/20 text-orange-500' :
+                'bg-gray-50 dark:bg-gray-800/50 text-gray-400',
+              ]"
+            >#{{ idx + 1 }}</span>
+            <!-- Category info + bar -->
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between items-baseline mb-1">
+                <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate" :title="cat.kategori">{{ cat.kategori }}</p>
+                <span class="text-xs text-gray-400 dark:text-gray-500 shrink-0 ml-2">{{ cat.jumlahProduk.toLocaleString('id-ID') }} produk</span>
+              </div>
+              <div class="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                <div
+                  class="h-full rounded-full transition-all duration-700"
+                  :style="{
+                    width: `${categoryTrend[0]?.totalTerjual ? (cat.totalTerjual / categoryTrend[0].totalTerjual) * 100 : 0}%`,
+                    background: idx === 0 ? '#f59e0b' : idx === 1 ? '#6b7280' : idx === 2 ? '#f97316' : '#10b981',
+                  }"
+                />
+              </div>
+            </div>
+            <!-- Total terjual -->
+            <div class="text-right shrink-0 w-28">
+              <p class="text-sm font-bold text-gray-900 dark:text-white">{{ cat.totalTerjual.toLocaleString('id-ID') }}</p>
+              <p class="text-[10px] text-gray-400">unit terjual</p>
+            </div>
+          </div>
+          <div v-if="!categoryTrend.length" class="py-8 text-center text-sm text-gray-400">Belum ada data kategori</div>
+        </div>
+      </div>
+
       <!-- Top Products per Marketplace -->
       <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between flex-wrap gap-3">
@@ -251,6 +314,7 @@ const loadingData = ref(true);
 const stats = ref({ totalProducts: 0, avgPrice: 0, avgRating: 0, totalSold: 0 });
 const chartData = ref<any>({});
 const marketplaceStats = ref<{ name: string; count: number }[]>([]);
+const categoryTrend = ref<{ kategori: string; totalTerjual: number; jumlahProduk: number }[]>([]);
 const totalProducts = computed(() => stats.value.totalProducts || 1);
 const topProductsByMarketplace = ref<Record<string, any[]>>({});
 const selectedMarketplace = ref('tokopedia');
@@ -327,6 +391,7 @@ const fetchDashboardData = async () => {
       stats.value = data.stats;
       chartData.value = data.charts;
       marketplaceStats.value = data.marketplaceDistribution ?? [];
+      categoryTrend.value = data.categoryTrend ?? [];
       topProductsByMarketplace.value = data.topProductsByMarketplace ?? {};
     }
     toast.remove(t.id);

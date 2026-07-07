@@ -17,8 +17,8 @@ import type * as Prisma from "./prismaNamespace.js"
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.4.1",
-  "engineVersion": "55ae170b1ced7fc6ed07a15f110549408c501bb3",
+  "clientVersion": "7.5.0",
+  "engineVersion": "280c870be64f457428992c43c1f6d557fab6e29e",
   "activeProvider": "postgresql",
   "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../app/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id        String   @id @default(uuid())\n  email     String   @unique\n  password  String\n  name      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  predictions             Prediction[]\n  businessRecommendations BusinessRecommendation[]\n\n  @@map(\"users\")\n}\n\nmodel Product {\n  id            String   @id @default(uuid())\n  namaProduk    String\n  kategori      String\n  subKategori   String?\n  hargaProduk   Int\n  rating        Float    @default(0)\n  jumlahTerjual Int      @default(0)\n  namaToko      String?\n  url           String?\n  label         Int? // 0 = Kurang Menarik, 1 = Menarik\n  createdAt     DateTime @default(now())\n  updatedAt     DateTime @updatedAt\n\n  @@map(\"products\")\n}\n\nmodel Prediction {\n  id              String   @id @default(uuid())\n  userId          String\n  namaProduk      String\n  kategori        String\n  subKategori     String?\n  hargaProduk     Int\n  targetRating    Float\n  predictionScore Float // Skor prediksi dari model (0-100%)\n  predictionLabel Int // 0 atau 1\n  insight         String?  @db.Text\n  createdAt       DateTime @default(now())\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map(\"predictions\")\n}\n\nmodel BusinessRecommendation {\n  id                  String   @id @default(uuid())\n  userId              String\n  namaProduk          String\n  kategori            String\n  subKategori         String?\n  hargaProduk         Int\n  targetRating        Float\n  similarProducts     String?  @db.Text // JSON string untuk produk kompetitor\n  avgHargaKompetitor  Float?\n  avgRatingKompetitor Float?\n  recommendations     String   @db.Text // Rekomendasi lengkap\n  createdAt           DateTime @default(now())\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@map(\"business_recommendations\")\n}\n",
   "runtimeDataModel": {
@@ -67,7 +67,9 @@ export interface PrismaClientConstructor {
    * Type-safe database client for TypeScript
    * @example
    * ```
-   * const prisma = new PrismaClient()
+   * const prisma = new PrismaClient({
+   *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+   * })
    * // Fetch zero or more Users
    * const users = await prisma.user.findMany()
    * ```
@@ -89,7 +91,9 @@ export interface PrismaClientConstructor {
  * Type-safe database client for TypeScript
  * @example
  * ```
- * const prisma = new PrismaClient()
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
  * // Fetch zero or more Users
  * const users = await prisma.user.findMany()
  * ```
