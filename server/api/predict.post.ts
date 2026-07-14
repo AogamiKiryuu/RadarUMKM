@@ -16,28 +16,54 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig();
 
-  // ── Panggil Flask API v3 ───────────────────────────────────────────────────
+  const flaskBody = {
+    nama_produk  : namaProduk,
+    kategori,
+    sub_kategori : subKategori ?? '',
+    harga_produk : hargaProduk,
+  };
+
+  // ── Panggil Flask API v3 — coba lokal dulu, fallback ke URL production ────
   let flaskData: any;
-  try {
-    flaskData = await $fetch(`${config.flaskApiUrl}/predict`, {
-      method: 'POST',
+
+  const tryFetch = async (baseUrl: string) => {
+    return $fetch(`${baseUrl}/predict`, {
+      method : 'POST',
       timeout: 30000,
-      body: {
-        nama_produk  : namaProduk,
-        kategori,
-        sub_kategori : subKategori ?? '',
-        harga_produk : hargaProduk,
-      },
+      body   : flaskBody,
     });
-  } catch (err: any) {
-    const flaskBody = err?.data ?? err?.response?._data;
-    if (flaskBody?.status === 'warning' || flaskBody?.status === 'error') {
-      throw createError({ statusCode: 422, message: flaskBody.message as string });
+  };
+
+  const LOCAL_URL      = 'http://localhost:5000';
+  const PRODUCTION_URL = config.flaskApiUrl; // dari FLASK_API_URL di .env
+
+  // Tentukan urutan: kalau PRODUCTION_URL ≠ lokal, coba lokal dulu sebagai prioritas
+  const urls = PRODUCTION_URL === LOCAL_URL
+    ? [LOCAL_URL]
+    : [LOCAL_URL, PRODUCTION_URL];
+
+  let lastErr: any;
+  for (const url of urls) {
+    try {
+      flaskData = await tryFetch(url);
+      console.log(`✅ Flask API berhasil dari: ${url}`);
+      break;
+    } catch (err: any) {
+      const body = err?.data ?? err?.response?._data;
+      // Kalau Flask sengaja mengembalikan error bisnis (bukan network error), lempar langsung
+      if (body?.status === 'warning' || body?.status === 'error') {
+        throw createError({ statusCode: 422, message: body.message as string });
+      }
+      console.warn(`⚠️  Flask di ${url} tidak merespons: ${err?.message}`);
+      lastErr = err;
     }
-    console.error('⚠️  Flask API tidak dapat dihubungi:', err?.message ?? err);
+  }
+
+  if (!flaskData) {
+    console.error('⚠️  Semua endpoint Flask tidak dapat dihubungi');
     throw createError({
       statusCode: 503,
-      message: `Flask API tidak dapat dihubungi di ${config.flaskApiUrl}. Pastikan server Flask sudah berjalan (python app.py).`,
+      message   : `Flask API tidak dapat dihubungi. Coba: jalankan Flask lokal (python app.py) atau periksa koneksi ke ${PRODUCTION_URL}.`,
     });
   }
 

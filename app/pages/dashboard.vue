@@ -47,7 +47,7 @@
       </div>
 
       <!-- CTA Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 gap-4">
         <div
           class="group relative bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl p-6 cursor-pointer overflow-hidden hover:shadow-xl hover:shadow-emerald-200/60 dark:hover:shadow-emerald-900/50 transition-all duration-300 hover:scale-[1.01]"
           @click="router.push('/prediksi')"
@@ -55,40 +55,20 @@
           <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full" />
           <div class="absolute -right-4 bottom-4 w-20 h-20 bg-white/5 rounded-full" />
           <div class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity" style="background: radial-gradient(circle at 70% 50%, white, transparent 60%)" />
-          <div class="relative z-10">
-            <div class="flex items-start justify-between mb-4">
-              <div class="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl">
-                <UIcon name="i-heroicons-arrow-trending-up" class="w-5 h-5 text-white" />
+          <div class="relative z-10 flex items-center justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl">
+                  <UIcon name="i-heroicons-arrow-trending-up" class="w-5 h-5 text-white" />
+                </div>
+                <h3 class="text-white font-bold text-base">Prediksi Tren</h3>
               </div>
-              <UIcon name="i-heroicons-arrow-top-right-on-square" class="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
+              <p class="text-emerald-100/80 text-sm mb-4">Analisis daya tarik produk dengan Machine Learning + insight pasar v3</p>
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full">
+                Mulai Prediksi <UIcon name="i-heroicons-arrow-right" class="w-3 h-3" />
+              </span>
             </div>
-            <h3 class="text-white font-bold text-base mb-1">Prediksi Tren</h3>
-            <p class="text-emerald-100/80 text-sm mb-4">Analisis daya tarik produk dengan ML + insight pasar v3</p>
-            <span class="inline-flex items-center gap-1.5 text-xs font-semibold bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full">
-              Mulai Prediksi <UIcon name="i-heroicons-arrow-right" class="w-3 h-3" />
-            </span>
-          </div>
-        </div>
-
-        <div
-          class="group relative bg-gradient-to-br from-violet-500 via-purple-500 to-purple-600 rounded-2xl p-6 cursor-pointer overflow-hidden hover:shadow-xl hover:shadow-purple-200/60 dark:hover:shadow-purple-900/50 transition-all duration-300 hover:scale-[1.01]"
-          @click="router.push('/rekomendasi')"
-        >
-          <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full" />
-          <div class="absolute -right-4 bottom-4 w-20 h-20 bg-white/5 rounded-full" />
-          <div class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity" style="background: radial-gradient(circle at 70% 50%, white, transparent 60%)" />
-          <div class="relative z-10">
-            <div class="flex items-start justify-between mb-4">
-              <div class="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl">
-                <UIcon name="i-heroicons-light-bulb" class="w-5 h-5 text-white" />
-              </div>
-              <UIcon name="i-heroicons-arrow-top-right-on-square" class="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
-            </div>
-            <h3 class="text-white font-bold text-base mb-1">Analisis Rekomendasi</h3>
-            <p class="text-violet-100/80 text-sm mb-4">Dapatkan strategi bisnis berbasis data pasar nyata</p>
-            <span class="inline-flex items-center gap-1.5 text-xs font-semibold bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full">
-              Analisis Sekarang <UIcon name="i-heroicons-arrow-right" class="w-3 h-3" />
-            </span>
+            <UIcon name="i-heroicons-arrow-top-right-on-square" class="w-6 h-6 text-white/60 group-hover:text-white transition-colors flex-shrink-0 ml-4" />
           </div>
         </div>
       </div>
