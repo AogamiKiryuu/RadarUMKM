@@ -14,7 +14,7 @@
           <h1 class="text-xl font-bold text-gray-900 dark:text-white">Selamat datang 👋</h1>
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Ringkasan data produk UMKM Bogor dari <span class="font-semibold text-emerald-600">{{ stats.totalProducts?.toLocaleString('id-ID') }}</span> dataset pasar.</p>
         </div>
-        <UButton icon="i-heroicons-arrow-path" variant="ghost" color="gray" size="sm" :loading="loadingData" @click="fetchDashboardData">
+        <UButton icon="i-heroicons-arrow-path" variant="ghost" color="neutral" size="sm" :loading="loadingData" @click="fetchDashboardData">
           <span class="hidden sm:inline">Refresh</span>
         </UButton>
       </div>
