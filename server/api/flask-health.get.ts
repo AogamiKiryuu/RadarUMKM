@@ -4,7 +4,7 @@ export default defineEventHandler(async () => {
   try {
     const data = await $fetch(`${config.flaskApiUrl}/health`, {
       method: 'GET',
-      timeout: 3000,
+      timeout: 15000,
     });
     return { online: true, ...data as object };
   } catch {

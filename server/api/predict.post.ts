@@ -21,6 +21,7 @@ export default defineEventHandler(async (event) => {
   try {
     flaskData = await $fetch(`${config.flaskApiUrl}/predict`, {
       method: 'POST',
+      timeout: 30000,
       body: {
         nama_produk  : namaProduk,
         kategori,

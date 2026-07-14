@@ -270,7 +270,7 @@
     <!-- ── Auth Modal ── -->
     <Teleport to="body">
       <Transition name="modal">
-        <div v-if="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div v-if="showModal" class="fixed inset-0 z-[50] flex items-center justify-center p-4">
           <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="showModal = false" />
           <div class="relative z-10 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md border border-gray-100 dark:border-gray-800 overflow-hidden">
             <!-- Modal Header -->
