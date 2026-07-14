@@ -88,6 +88,88 @@
               </button>
             </div>
           </div>
+          <!-- Produk Terpopuler (pindah ke kiri) -->
+          <div v-if="result && !loading && result.produkTerpopuler && result.produkTerpopuler.produk?.length > 0" class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+            <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+              <div class="p-1.5 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
+                <UIcon name="i-heroicons-fire" class="w-3.5 h-3.5 text-rose-500" />
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Produk Paling Digemari</h3>
+                <p class="text-xs text-gray-400 mt-0.5">{{ result.produkTerpopuler.label }}</p>
+              </div>
+            </div>
+            <div class="p-3 space-y-2">
+              <div
+                v-for="(produk, idx) in result.produkTerpopuler.produk"
+                :key="idx"
+                class="flex items-start justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl gap-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                <div class="flex items-start gap-2.5 flex-1 min-w-0">
+                  <span class="text-xs font-bold text-gray-300 dark:text-gray-600 mt-0.5 w-5 shrink-0">#{{ idx + 1 }}</span>
+                  <div class="min-w-0">
+                    <a
+                      v-if="produk.urlProduk && produk.urlProduk !== 'nan'"
+                      :href="produk.urlProduk"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline line-clamp-2"
+                    >{{ produk.nama }}</a>
+                    <p v-else class="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2">{{ produk.nama }}</p>
+                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                      <span class="text-xs text-gray-400">{{ produk.namaToko }}</span>
+                      <span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 px-1.5 py-0.5 rounded">{{ produk.marketplace }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <p class="text-sm font-bold text-gray-900 dark:text-white">Rp {{ formatNumber(produk.harga) }}</p>
+                  <p class="text-xs text-amber-500">⭐ {{ produk.rating }}</p>
+                  <p class="text-xs text-gray-400">{{ formatNumber(produk.jumlahTerjual) }} terjual</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kompetitor Serupa (pindah ke kiri) -->
+          <div v-if="result && !loading && result.similarProducts && result.similarProducts.length > 0" class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+            <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <UIcon name="i-heroicons-eye" class="w-3.5 h-3.5 text-blue-500" />
+                </div>
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Produk Kompetitor Serupa</h3>
+              </div>
+              <span class="text-xs font-semibold bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full">{{ result.similarProducts.length }} produk</span>
+            </div>
+            <div class="p-3 space-y-2">
+              <div
+                v-for="(product, idx) in result.similarProducts.slice(0, 5)"
+                :key="idx"
+                class="flex items-start justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl gap-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                <div class="flex-1 min-w-0">
+                  <a
+                    v-if="product.url_produk && product.url_produk !== 'nan'"
+                    :href="product.url_produk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline line-clamp-2"
+                  >{{ product.nama_produk }}</a>
+                  <p v-else class="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2">{{ product.nama_produk }}</p>
+                  <div class="flex items-center gap-2 mt-1 flex-wrap">
+                    <span class="text-xs text-gray-400">{{ product.nama_toko }}</span>
+                    <span v-if="product.kemiripan_persen" class="text-xs font-semibold bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded">{{ product.kemiripan_persen }}% mirip</span>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <p class="text-sm font-bold text-gray-900 dark:text-white">Rp {{ formatNumber(product.harga_produk) }}</p>
+                  <p class="text-xs text-amber-500">⭐ {{ product.rating }}</p>
+                  <p class="text-xs text-gray-400">{{ formatNumber(product.jumlah_terjual) }} terjual</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- ── Results Panel ── -->
@@ -269,88 +351,7 @@
               </div>
             </div>
 
-            <!-- Produk Terpopuler -->
-            <div v-if="result.produkTerpopuler && result.produkTerpopuler.produk?.length > 0" class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
-              <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
-                <div class="p-1.5 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
-                  <UIcon name="i-heroicons-fire" class="w-3.5 h-3.5 text-rose-500" />
-                </div>
-                <div>
-                  <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Produk Paling Digemari</h3>
-                  <p class="text-xs text-gray-400 mt-0.5">{{ result.produkTerpopuler.label }}</p>
-                </div>
-              </div>
-              <div class="p-3 space-y-2">
-                <div
-                  v-for="(produk, idx) in result.produkTerpopuler.produk"
-                  :key="idx"
-                  class="flex items-start justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl gap-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                  <div class="flex items-start gap-2.5 flex-1 min-w-0">
-                    <span class="text-xs font-bold text-gray-300 dark:text-gray-600 mt-0.5 w-5 shrink-0">#{{ idx + 1 }}</span>
-                    <div class="min-w-0">
-                      <a
-                        v-if="produk.urlProduk && produk.urlProduk !== 'nan'"
-                        :href="produk.urlProduk"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline line-clamp-2"
-                      >{{ produk.nama }}</a>
-                      <p v-else class="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2">{{ produk.nama }}</p>
-                      <div class="flex items-center gap-1.5 mt-1 flex-wrap">
-                        <span class="text-xs text-gray-400">{{ produk.namaToko }}</span>
-                        <span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 px-1.5 py-0.5 rounded">{{ produk.marketplace }}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="text-right shrink-0">
-                    <p class="text-sm font-bold text-gray-900 dark:text-white">Rp {{ formatNumber(produk.harga) }}</p>
-                    <p class="text-xs text-amber-500">⭐ {{ produk.rating }}</p>
-                    <p class="text-xs text-gray-400">{{ formatNumber(produk.jumlahTerjual) }} terjual</p>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <!-- Competitors -->
-            <div v-if="result.similarProducts && result.similarProducts.length > 0" class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
-              <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <div class="p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <UIcon name="i-heroicons-eye" class="w-3.5 h-3.5 text-blue-500" />
-                  </div>
-                  <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Produk Kompetitor Serupa</h3>
-                </div>
-                <span class="text-xs font-semibold bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full">{{ result.similarProducts.length }} produk</span>
-              </div>
-              <div class="p-3 space-y-2">
-                <div
-                  v-for="(product, idx) in result.similarProducts.slice(0, 5)"
-                  :key="idx"
-                  class="flex items-start justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl gap-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                  <div class="flex-1 min-w-0">
-                    <a
-                      v-if="product.url_produk && product.url_produk !== 'nan'"
-                      :href="product.url_produk"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline line-clamp-2"
-                    >{{ product.nama_produk }}</a>
-                    <p v-else class="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2">{{ product.nama_produk }}</p>
-                    <div class="flex items-center gap-2 mt-1 flex-wrap">
-                      <span class="text-xs text-gray-400">{{ product.nama_toko }}</span>
-                      <span v-if="product.kemiripan_persen" class="text-xs font-semibold bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded">{{ product.kemiripan_persen }}% mirip</span>
-                    </div>
-                  </div>
-                  <div class="text-right shrink-0">
-                    <p class="text-sm font-bold text-gray-900 dark:text-white">Rp {{ formatNumber(product.harga_produk) }}</p>
-                    <p class="text-xs text-amber-500">⭐ {{ product.rating }}</p>
-                    <p class="text-xs text-gray-400">{{ formatNumber(product.jumlah_terjual) }} terjual</p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </template>
         </div>
       </div>
