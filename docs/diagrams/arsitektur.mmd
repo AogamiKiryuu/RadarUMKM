@@ -1,0 +1,7 @@
+graph TD
+    User([Pengguna / UMKM]) -->|Akses Web| Vercel[Vercel Serverless / Nuxt]
+    Vercel -->|Auth & Dashboard| Supabase[(Supabase PostgreSQL)]
+    Vercel -->|Request Prediksi| Render[Render / Flask ML API]
+    Render -->|Query Data Kompetitor| Supabase
+    Render -->|Kembalikan Prediksi & Insight| Vercel
+    Supabase -->|Data 1.027 Produk UMKM| Render
