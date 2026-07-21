@@ -1,10 +1,10 @@
 /**
  * csv-dataset.ts
- * Utility dashboard — mengambil data produk dari database (Supabase via Prisma)
- * Menggantikan pembacaan langsung dari file CSV (tidak kompatibel dengan Vercel serverless)
+ * Utility dashboard — mengambil data produk dari database (Supabase via pg langsung)
+ * Menggunakan pg.Pool langsung untuk menghindari masalah Prisma client generation di Vercel.
  */
 
-import prisma from './prisma';
+import pg from 'pg';
 
 export interface ProductRow {
   url_produk: string;
@@ -22,50 +22,67 @@ export interface ProductRow {
   popularity_score: number;
 }
 
-// Cache sederhana untuk menghindari query berulang dalam satu request lifecycle
+// Singleton pool
+let _pool: pg.Pool | null = null;
+
+function getPool(): pg.Pool {
+  if (_pool) return _pool;
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) throw new Error('[dashboard] DATABASE_URL is not set.');
+  const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
+  _pool = new pg.Pool({
+    connectionString,
+    ssl: isLocal ? false : { rejectUnauthorized: false },
+  });
+  return _pool;
+}
+
+// Cache in-memory (5 menit) agar tidak query DB tiap request
 let _cache: ProductRow[] | null = null;
 let _cacheTime = 0;
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 menit
+const CACHE_TTL_MS = 5 * 60 * 1000;
 
 export async function getProducts(): Promise<ProductRow[]> {
   const now = Date.now();
   if (_cache && (now - _cacheTime) < CACHE_TTL_MS) return _cache;
 
-  const rows = await prisma.product.findMany({
-    select: {
-      url: true,
-      namaProduk: true,
-      kategori: true,
-      subKategori: true,
-      marketplace: true,
-      lokasi: true,
-      namaToko: true,
-      hargaProduk: true,
-      jumlahTerjual: true,
-      rating: true,
-      popularityScore: true,
-    },
-  });
+  const pool = getPool();
+  const { rows } = await pool.query<{
+    url: string | null;
+    namaProduk: string;
+    kategori: string;
+    subKategori: string | null;
+    marketplace: string | null;
+    lokasi: string | null;
+    namaToko: string | null;
+    hargaProduk: number;
+    jumlahTerjual: number;
+    rating: number;
+    popularityScore: number | null;
+  }>(`
+    SELECT url, "namaProduk", kategori, "subKategori", marketplace, lokasi,
+           "namaToko", "hargaProduk", "jumlahTerjual", rating, "popularityScore"
+    FROM products
+  `);
 
-  // Map kolom DB ke format ProductRow yang sudah dipakai di seluruh dashboard
   _cache = rows.map((r) => ({
-    url_produk:       r.url         ?? '',
-    nama_produk:      r.namaProduk,
+    url_produk:        r.url          ?? '',
+    nama_produk:       r.namaProduk,
     nama_produk_clean: r.namaProduk.toLowerCase().replace(/[^a-z0-9\s]/g, ' '),
-    kategori:         r.kategori,
-    sub_kategori:     r.subKategori  ?? '',
-    marketplace:      r.marketplace  ?? '',
-    lokasi:           r.lokasi       ?? '',
-    lokasi_clean:     r.lokasi       ?? '',
-    nama_toko:        r.namaToko     ?? '',
-    harga_produk:     r.hargaProduk,
-    jumlah_terjual:   r.jumlahTerjual,
-    rating:           r.rating,
-    popularity_score: r.popularityScore ?? 0,
+    kategori:          r.kategori,
+    sub_kategori:      r.subKategori  ?? '',
+    marketplace:       r.marketplace  ?? '',
+    lokasi:            r.lokasi       ?? '',
+    lokasi_clean:      r.lokasi       ?? '',
+    nama_toko:         r.namaToko     ?? '',
+    harga_produk:      Number(r.hargaProduk),
+    jumlah_terjual:    Number(r.jumlahTerjual),
+    rating:            Number(r.rating),
+    popularity_score:  Number(r.popularityScore ?? 0),
   }));
 
   _cacheTime = now;
-  console.log(`✅ DB dataset loaded: ${_cache.length} rows`);
+  console.log(`✅ DB dashboard loaded: ${_cache.length} rows`);
   return _cache;
 }
 
@@ -75,11 +92,9 @@ export async function getDashboardStats() {
   const products = await getProducts();
   const n = products.length;
   if (n === 0) return { totalProducts: 0, avgPrice: 0, avgRating: 0, totalSold: 0 };
-
-  const avgPrice = products.reduce((s, p) => s + p.harga_produk, 0) / n;
+  const avgPrice  = products.reduce((s, p) => s + p.harga_produk, 0) / n;
   const avgRating = products.reduce((s, p) => s + p.rating, 0) / n;
   const totalSold = products.reduce((s, p) => s + p.jumlah_terjual, 0);
-
   return {
     totalProducts: n,
     avgPrice     : Math.round(avgPrice),
@@ -136,11 +151,9 @@ export async function getTopProductsByLocation(topN = 10) {
   const products = await getProducts();
   const locations = ['Bogor', 'Jakarta', 'Bekasi', 'Depok', 'Tangerang', 'Lainnya'];
   const result: Record<string, typeof products> = {};
-
   result['Semua'] = [...products]
     .sort((a, b) => b.popularity_score - a.popularity_score)
     .slice(0, topN);
-
   for (const loc of locations) {
     result[loc] = products
       .filter((p) => p.lokasi_clean === loc)
