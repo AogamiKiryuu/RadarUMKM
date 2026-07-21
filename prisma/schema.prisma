@@ -39,3 +39,22 @@ model Prediction {
 
   @@map("predictions")
 }
+
+model Product {
+  id              String   @id @default(uuid())
+  url             String?
+  namaProduk      String
+  kategori        String
+  subKategori     String?
+  marketplace     String?
+  lokasi          String?
+  namaToko        String?
+  hargaProduk     Int
+  jumlahTerjual   Int      @default(0)
+  rating          Float    @default(0)
+  popularityScore Float?
+  hargaTier       Int?
+  createdAt       DateTime @default(now())
+
+  @@map("products")
+}
