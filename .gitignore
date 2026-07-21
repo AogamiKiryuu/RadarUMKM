@@ -4,6 +4,10 @@ node_modules/
 .output/
 dist/
 
+# Prisma generated client — di-generate ulang saat build via postinstall/build script
+app/generated/
+
+
 # Environment — jangan pernah commit file ini
 .env
 *.env

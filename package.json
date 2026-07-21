@@ -6,12 +6,12 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "build": "nuxt build",
+    "build": "prisma generate && nuxt build",
     "start": "node .output/server/index.mjs",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "prisma generate && nuxt prepare",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
