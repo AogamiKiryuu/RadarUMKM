@@ -1,12 +1,10 @@
 /**
  * csv-dataset.ts
- * Singleton utility — membaca dataset_preprocessed.csv sekali saat startup
- * dan mengekspos berbagai agregasi untuk dashboard & API.
+ * Utility dashboard — mengambil data produk dari database (Supabase via Prisma)
+ * Menggantikan pembacaan langsung dari file CSV (tidak kompatibel dengan Vercel serverless)
  */
 
-import { createReadStream } from 'node:fs';
-import { resolve } from 'node:path';
-import { createInterface } from 'node:readline';
+import prisma from './prisma';
 
 export interface ProductRow {
   url_produk: string;
@@ -24,73 +22,51 @@ export interface ProductRow {
   popularity_score: number;
 }
 
+// Cache sederhana untuk menghindari query berulang dalam satu request lifecycle
 let _cache: ProductRow[] | null = null;
+let _cacheTime = 0;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 menit
 
 export async function getProducts(): Promise<ProductRow[]> {
-  if (_cache) return _cache;
+  const now = Date.now();
+  if (_cache && (now - _cacheTime) < CACHE_TTL_MS) return _cache;
 
-  const csvPath = resolve(process.cwd(), 'data/processed/dataset_preprocessed.csv');
-  const rows: ProductRow[] = [];
-
-  await new Promise<void>((res, rej) => {
-    const rl = createInterface({ input: createReadStream(csvPath) });
-    let headers: string[] = [];
-    let first = true;
-
-    const parseCsvLine = (text: string) => {
-      const vals: string[] = [];
-      let inQuotes = false;
-      let curr = '';
-      for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        if (char === '"') {
-          inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          vals.push(curr);
-          curr = '';
-        } else {
-          curr += char;
-        }
-      }
-      vals.push(curr);
-      return vals;
-    };
-
-    rl.on('line', (line) => {
-      if (!line.trim()) return;
-      if (first) {
-        headers = parseCsvLine(line);
-        first = false;
-        return;
-      }
-
-      const vals = parseCsvLine(line);
-      const get = (col: string) => vals[headers.indexOf(col)] ?? '';
-
-      rows.push({
-        url_produk      : get('url_produk'),
-        nama_produk     : get('nama_produk'),
-        nama_produk_clean: get('nama_produk_clean'),
-        kategori        : get('kategori'),
-        sub_kategori    : get('sub_kategori'),
-        marketplace     : get('marketplace'),
-        lokasi          : get('lokasi'),
-        lokasi_clean    : get('lokasi_clean'),
-        nama_toko       : get('nama_toko'),
-        harga_produk    : parseFloat(get('harga_produk')) || 0,
-        jumlah_terjual  : parseFloat(get('jumlah_terjual')) || 0,
-        rating          : parseFloat(get('rating')) || 0,
-        popularity_score: parseFloat(get('popularity_score')) || 0,
-      });
-    });
-
-    rl.on('close', () => res());
-    rl.on('error', rej);
+  const rows = await prisma.product.findMany({
+    select: {
+      url: true,
+      namaProduk: true,
+      kategori: true,
+      subKategori: true,
+      marketplace: true,
+      lokasi: true,
+      namaToko: true,
+      hargaProduk: true,
+      jumlahTerjual: true,
+      rating: true,
+      popularityScore: true,
+    },
   });
 
-  _cache = rows;
-  console.log(`✅ CSV dataset loaded: ${rows.length} rows`);
-  return rows;
+  // Map kolom DB ke format ProductRow yang sudah dipakai di seluruh dashboard
+  _cache = rows.map((r) => ({
+    url_produk:       r.url         ?? '',
+    nama_produk:      r.namaProduk,
+    nama_produk_clean: r.namaProduk.toLowerCase().replace(/[^a-z0-9\s]/g, ' '),
+    kategori:         r.kategori,
+    sub_kategori:     r.subKategori  ?? '',
+    marketplace:      r.marketplace  ?? '',
+    lokasi:           r.lokasi       ?? '',
+    lokasi_clean:     r.lokasi       ?? '',
+    nama_toko:        r.namaToko     ?? '',
+    harga_produk:     r.hargaProduk,
+    jumlah_terjual:   r.jumlahTerjual,
+    rating:           r.rating,
+    popularity_score: r.popularityScore ?? 0,
+  }));
+
+  _cacheTime = now;
+  console.log(`✅ DB dataset loaded: ${_cache.length} rows`);
+  return _cache;
 }
 
 // ─── Aggregation Helpers ──────────────────────────────────────────────────────
@@ -161,7 +137,6 @@ export async function getTopProductsByLocation(topN = 10) {
   const locations = ['Bogor', 'Jakarta', 'Bekasi', 'Depok', 'Tangerang', 'Lainnya'];
   const result: Record<string, typeof products> = {};
 
-  // "Semua" = top produk dari seluruh dataset
   result['Semua'] = [...products]
     .sort((a, b) => b.popularity_score - a.popularity_score)
     .slice(0, topN);
@@ -188,10 +163,10 @@ export async function getTopRatedProducts(topN = 10) {
 export async function getPriceDistribution() {
   const products = await getProducts();
   const ranges = [
-    { range: '0-50k', min: 0, max: 50000 },
-    { range: '50-100k', min: 50000, max: 100000 },
-    { range: '100-200k', min: 100000, max: 200000 },
-    { range: '200k+', min: 200000, max: Infinity },
+    { range: '0-50k',    min: 0,      max: 50000   },
+    { range: '50-100k',  min: 50000,  max: 100000  },
+    { range: '100-200k', min: 100000, max: 200000  },
+    { range: '200k+',    min: 200000, max: Infinity },
   ];
   return ranges.map(({ range, min, max }) => ({
     range,
