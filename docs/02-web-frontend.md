@@ -45,6 +45,11 @@ app/
 
 **Fitur:**
 - Tab toggle antara form Login dan Register
+- Seksi Edukasi Interaktif **"Cara Kerja AI"**:
+  - **TF-IDF & Cosine:** Demo tokenisasi kata dari input nama produk.
+  - **Random Forest:** Visualisasi _voting_ 5 pohon keputusan secara real-time.
+  - **Analisis Harga:** Kalkulator _slider_ dinamis untuk melihat segmen risiko.
+  - **Skor Akhir:** Penjelasan pipeline penentuan persentase peluang laku.
 - Validasi field di client-side sebelum submit
 - Simpan nama user ke `localStorage` untuk ditampilkan di UI
 - Redirect otomatis ke `/dashboard` setelah berhasil login
@@ -110,6 +115,7 @@ GET /api/dashboard/stats
 - **Insight pasar** — ranking kategori, sub-kategori populer
 
 **Fitur Tambahan:**
+- **Desain Responsif Mobile:** Pada tampilan mobile, hasil skor prediksi (panel utama) akan otomatis berpindah ke bawah input form menggunakan Tailwind CSS `order` logic.
 - Tombol **"Simpan Prediksi"** — menyimpan hasil ke database (`/api/predictions/save`)
 - Tombol **"Lihat Rekomendasi"** — forward data ke halaman rekomendasi via `sessionStorage`
 - **Riwayat prediksi** — tersimpan di `localStorage`, klik untuk load ulang
@@ -141,6 +147,13 @@ GET /api/dashboard/stats
   - 📢 Strategi Marketing — visibilitas & diferensiasi
 - **Rekomendasi aksi spesifik** per dimensi (list bullet)
 - **Daftar kompetitor terdekat** dari database Supabase
+
+---
+
+## Desain & UI/UX Guidelines
+
+- **Ikon Vektor (UIcon):** Semua elemen visual (indikator sukses, warning, rating bintang, dll) sepenuhnya menggunakan library **Nuxt UI (Heroicons)**. Kami menghindari penggunaan *Emoji* sistem untuk menjaga konsistensi gaya profesional UI antar perangkat (iOS, Android, Windows).
+- **Adaptasi Tema (Dark/Light Mode):** Hampir semua komponen secara otomatis menyesuaikan warna (menggunakan modifier `dark:` dari Tailwind). Namun, blok komponen kode khusus (seperti kotak simulasi algoritma `.math`) menggunakan latar belakang hitam statis (`bg-gray-900`) untuk mempertahankan estetika *Code Editor/IDE* terlepas dari mode warna yang sedang aktif.
 
 ---
 
