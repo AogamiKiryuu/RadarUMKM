@@ -97,14 +97,18 @@ export default defineEventHandler(async (event) => {
   }));
 
   // Konteks harga vs pasar (fitur baru v3)
-  const konteksHarga = flaskData.konteks_harga
-    ? {
-        medianPasar   : flaskData.konteks_harga.median_pasar,
-        rasioVsPasar  : flaskData.konteks_harga.rasio_vs_pasar,
-        segmen        : flaskData.konteks_harga.segmen === 'Premium' ? 'Mahal' : flaskData.konteks_harga.segmen, // "Murah" | "Menengah" | "Mahal"
-        selisihPersen : flaskData.konteks_harga.selisih_persen,
-      }
-    : null;
+  let konteksHarga = null;
+  if (flaskData.konteks_harga) {
+    let mappedSegmen = flaskData.konteks_harga.segmen === 'Premium' ? 'Mahal' : flaskData.konteks_harga.segmen;
+    if (flaskData.konteks_harga.selisih_persen < -50) mappedSegmen = 'Sangat Murah';
+
+    konteksHarga = {
+      medianPasar   : flaskData.konteks_harga.median_pasar,
+      rasioVsPasar  : flaskData.konteks_harga.rasio_vs_pasar,
+      segmen        : mappedSegmen,
+      selisihPersen : flaskData.konteks_harga.selisih_persen,
+    };
+  }
 
   // Produk paling digemari di kategori ini (fitur baru v3)
   const produkTerpopuler = flaskData.produk_terpopuler
