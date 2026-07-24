@@ -125,7 +125,7 @@ GET /api/dashboard/stats
 |-----------------|-------------------|
 | Murah | Murah |
 | Menengah | Menengah |
-| Premium | Risiko |
+| Premium (dari ML) | Mahal |
 
 ---
 

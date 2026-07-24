@@ -523,7 +523,7 @@
                     <div class="flex items-center gap-2">
                       <span class="text-red-400 text-xs font-mono w-32">δ &gt; +20%</span>
                       <span class="text-gray-600">→</span>
-                      <span class="px-2 py-0.5 bg-red-500/10 rounded text-red-300 text-xs font-semibold">Premium</span>
+                      <span class="px-2 py-0.5 bg-red-500/10 rounded text-red-300 text-xs font-semibold">Mahal</span>
                       <span class="text-gray-600 text-[10px]">(risiko tinggi)</span>
                     </div>
                   </div>
@@ -553,19 +553,19 @@
                 </div>
                 <div
                   class="border rounded-2xl p-4 transition-all duration-300"
-                  :class="priceSegmen === 'Ekonomis' ? 'bg-emerald-500/10 border-emerald-500/20' : priceSegmen === 'Premium' ? 'bg-red-500/10 border-red-500/20' : 'bg-amber-500/10 border-amber-500/20'"
+                  :class="priceSegmen === 'Ekonomis' ? 'bg-emerald-500/10 border-emerald-500/20' : priceSegmen === 'Mahal' ? 'bg-red-500/10 border-red-500/20' : 'bg-amber-500/10 border-amber-500/20'"
                 >
                   <div class="flex items-center justify-between mb-3">
                     <div>
                       <p class="text-[10px] text-gray-500 uppercase tracking-wide">Selisih (δ)</p>
                       <p class="text-3xl font-extrabold mt-0.5 font-mono transition-colors duration-300"
-                        :class="priceSegmen === 'Ekonomis' ? 'text-emerald-400' : priceSegmen === 'Premium' ? 'text-red-400' : 'text-amber-400'"
+                        :class="priceSegmen === 'Ekonomis' ? 'text-emerald-400' : priceSegmen === 'Mahal' ? 'text-red-400' : 'text-amber-400'"
                       >{{ priceDiffPercent > 0 ? '+' : '' }}{{ priceDiffPercent.toFixed(1) }}%</p>
                     </div>
                     <div class="text-right">
                       <p class="text-[10px] text-gray-500 uppercase tracking-wide">Segmen Risiko</p>
                       <p class="text-xl font-bold mt-0.5 transition-colors duration-300"
-                        :class="priceSegmen === 'Ekonomis' ? 'text-emerald-400' : priceSegmen === 'Premium' ? 'text-red-400' : 'text-amber-400'"
+                        :class="priceSegmen === 'Ekonomis' ? 'text-emerald-400' : priceSegmen === 'Mahal' ? 'text-red-400' : 'text-amber-400'"
                       >{{ priceSegmen }}</p>
                     </div>
                   </div>
@@ -573,7 +573,7 @@
                     <div class="bg-gray-200 dark:bg-gray-800 h-3 rounded-full overflow-hidden">
                       <div
                         class="h-3 rounded-full transition-all duration-300"
-                        :class="priceSegmen === 'Ekonomis' ? 'bg-emerald-500' : priceSegmen === 'Premium' ? 'bg-red-500' : 'bg-amber-500'"
+                        :class="priceSegmen === 'Ekonomis' ? 'bg-emerald-500' : priceSegmen === 'Mahal' ? 'bg-red-500' : 'bg-amber-500'"
                         :style="`width: ${Math.min(100, Math.max(3, (calcHargaUser / 200000) * 100))}%`"
                       />
                     </div>
@@ -1115,7 +1115,7 @@ const calcMedianPasar = ref(45000);
 const priceDiffPercent = computed(() => ((calcHargaUser.value - calcMedianPasar.value) / calcMedianPasar.value) * 100);
 const priceSegmen = computed(() => {
   if (priceDiffPercent.value < -20) return 'Ekonomis';
-  if (priceDiffPercent.value > 20) return 'Premium';
+  if (priceDiffPercent.value > 20) return 'Mahal';
   return 'Menengah';
 });
 

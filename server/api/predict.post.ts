@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
     ? {
         medianPasar   : flaskData.konteks_harga.median_pasar,
         rasioVsPasar  : flaskData.konteks_harga.rasio_vs_pasar,
-        segmen        : flaskData.konteks_harga.segmen,        // "Murah" | "Menengah" | "Premium"
+        segmen        : flaskData.konteks_harga.segmen === 'Premium' ? 'Mahal' : flaskData.konteks_harga.segmen, // "Murah" | "Menengah" | "Mahal"
         selisihPersen : flaskData.konteks_harga.selisih_persen,
       }
     : null;

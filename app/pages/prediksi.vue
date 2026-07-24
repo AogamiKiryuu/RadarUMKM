@@ -200,7 +200,7 @@
                 <!-- Konteks Harga Badge -->
                 <div v-if="result.konteksHarga" class="shrink-0 text-center bg-white/15 rounded-2xl p-4 backdrop-blur-sm">
                   <p class="text-white/70 text-[10px] uppercase tracking-wider mb-1">Segmen Risiko</p>
-                  <p class="text-white font-bold text-lg">{{ result.konteksHarga.segmen === 'Premium' ? 'Risiko' : result.konteksHarga.segmen }}</p>
+                  <p class="text-white font-bold text-lg">{{ result.konteksHarga.segmen }}</p>
                   <p class="text-white/70 text-[10px] mt-1">vs median pasar</p>
                   <p
                     class="font-bold text-sm mt-0.5"
