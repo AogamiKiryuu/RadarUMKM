@@ -106,7 +106,7 @@
                 class="flex items-start justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl gap-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
                 <div class="flex items-start gap-2.5 flex-1 min-w-0">
-                  <span class="text-xs font-bold text-gray-300 dark:text-gray-600 mt-0.5 w-5 shrink-0">#{{ idx + 1 }}</span>
+                  <span class="text-xs font-bold text-gray-300 dark:text-gray-600 mt-0.5 w-5 shrink-0">#{{ Number(idx) + 1 }}</span>
                   <div class="min-w-0">
                     <a
                       v-if="produk.urlProduk && produk.urlProduk !== 'nan'"
@@ -157,7 +157,7 @@
             </div>
             <div class="p-5">
               <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{{ prediksiError }}</p>
-              <UButton @click="prediksiError = null" variant="soft" color="error" size="sm" icon="i-heroicons-arrow-path" class="mt-4">Coba Lagi</UButton>
+              <UButton @click="() => { prediksiError = null }" variant="soft" color="error" size="sm" icon="i-heroicons-arrow-path" class="mt-4">Coba Lagi</UButton>
             </div>
           </div>
 
@@ -302,7 +302,7 @@
                       :class="idx === 0 ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-gray-50 dark:bg-gray-800'"
                     >
                       <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-gray-400 w-5">#{{ idx + 1 }}</span>
+                        <span class="text-xs font-bold text-gray-400 w-5">#{{ Number(idx) + 1 }}</span>
                         <span class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ sub.sub_kategori }}</span>
                       </div>
                       <div class="text-right">
@@ -345,7 +345,7 @@
           >
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 mb-1">
-                <span class="text-xs font-bold text-gray-300 dark:text-gray-600">#{{ idx + 1 }}</span>
+                <span class="text-xs font-bold text-gray-300 dark:text-gray-600">#{{ Number(idx) + 1 }}</span>
               </div>
               <a
                 v-if="product.url_produk && product.url_produk !== 'nan'"
