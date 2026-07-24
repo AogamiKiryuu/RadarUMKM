@@ -220,6 +220,517 @@
       </div>
     </section>
 
+    <!-- ── Cara Kerja AI ── -->
+    <section id="cara-kerja-ai" class="py-24 bg-gray-950 relative overflow-hidden">
+      <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(16,185,129,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.6) 1px, transparent 1px); background-size: 40px 40px" />
+      <div class="absolute top-1/4 -left-20 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-900/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div class="relative z-10 max-w-6xl mx-auto px-5 sm:px-8">
+        <!-- Header -->
+        <div class="text-center mb-14">
+          <span class="inline-block bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4">Transparansi AI</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white">
+            Bagaimana AI Menghitung
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Probabilitas?</span>
+          </h2>
+          <p class="text-gray-400 mt-3 max-w-xl mx-auto text-sm leading-relaxed">
+            Bukan “kotak hitam” — setiap angka prediksi memiliki dasar matematis yang jelas. Klik setiap tab untuk memahami cara kerjanya secara mendalam.
+          </p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex flex-wrap gap-2 mb-8 justify-center">
+          <button
+            v-for="tab in aiTabs"
+            :key="tab.id"
+            @click="activeAiTab = tab.id"
+            :class="activeAiTab === tab.id
+              ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 shadow-lg shadow-emerald-900/20'
+              : 'border-gray-700/50 text-gray-500 hover:text-gray-300 hover:border-gray-600'"
+            class="px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all duration-200 flex items-center gap-2 whitespace-nowrap"
+          >
+            <span class="text-base">{{ tab.icon }}</span>
+            <span>{{ tab.label }}</span>
+            <span v-if="activeAiTab === tab.id" class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+          </button>
+        </div>
+
+        <!-- Tab Panels -->
+        <Transition name="tab-fade" mode="out-in">
+          <div :key="activeAiTab">
+
+            <!-- Panel TF-IDF -->
+            <div v-if="activeAiTab === 'tfidf'" class="grid lg:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                  <div class="px-4 py-3 border-b border-gray-800 flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500/60" /><div class="w-3 h-3 rounded-full bg-yellow-500/60" /><div class="w-3 h-3 rounded-full bg-green-500/60" />
+                    <span class="ml-2 text-xs text-gray-500 font-mono">tfidf_cosine.math</span>
+                  </div>
+                  <div class="p-5 space-y-5 font-mono text-sm">
+                    <div>
+                      <p class="text-gray-500 text-[11px] mb-2.5">// 1. Term Frequency — frekuensi kata dalam nama produk</p>
+                      <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
+                        <span class="text-emerald-400">TF</span><span class="text-gray-400">(t, d)</span>
+                        <span class="text-gray-500">=</span>
+                        <div class="inline-flex flex-col items-center">
+                          <span class="text-amber-400 text-xs border-b border-gray-600 px-3 pb-1">frekuensi(t, d)</span>
+                          <span class="text-blue-400 text-xs pt-1">Σ frekuensi semua kata</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <p class="text-gray-500 text-[11px] mb-2.5">// 2. Inverse Document Frequency — keunikan kata di dataset</p>
+                      <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
+                        <span class="text-emerald-400">IDF</span><span class="text-gray-400">(t)</span>
+                        <span class="text-gray-500">=</span>
+                        <span class="text-white">log</span>
+                        <div class="inline-flex flex-col items-center mx-1">
+                          <span class="text-amber-400 text-xs border-b border-gray-600 px-2 pb-1">N (total produk)</span>
+                          <span class="text-blue-400 text-xs pt-1">df(t) (produk mengandung t)</span>
+                        </div>
+                        <span class="text-gray-500">+ 1</span>
+                      </div>
+                    </div>
+                    <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-3">
+                      <p class="text-gray-500 text-[11px] mb-2">// 3. Skor bobot akhir per kata</p>
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-emerald-400 font-bold">TF-IDF</span><span class="text-gray-400">(t, d)</span>
+                        <span class="text-gray-500">=</span>
+                        <span class="text-amber-400">TF(t, d)</span>
+                        <span class="text-gray-400">×</span>
+                        <span class="text-blue-400">IDF(t)</span>
+                      </div>
+                    </div>
+                    <div>
+                      <p class="text-gray-500 text-[11px] mb-2.5">// 4. Kemiripan antar dua vektor produk (Cosine Similarity)</p>
+                      <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
+                        <span class="text-violet-400">sim</span><span class="text-gray-400">(A, B)</span>
+                        <span class="text-gray-500">=</span>
+                        <div class="inline-flex flex-col items-center mx-1">
+                          <span class="text-amber-400 text-xs border-b border-gray-600 px-3 pb-1">A · B</span>
+                          <span class="text-blue-400 text-xs pt-1">‖A‖ × ‖B‖</span>
+                        </div>
+                        <span class="text-gray-500">∈ [0, 1]</span>
+                      </div>
+                    </div>
+                    <p class="text-[10px] text-gray-600 leading-relaxed">Hasil berupa vektor numerik yang merepresentasikan nama produk. Cosine similarity digunakan untuk mencari K produk paling mirip dari dataset sebagai referensi fitur.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                  <h4 class="text-sm font-bold text-white mb-1">🔬 Demo Tokenisasi Interaktif</h4>
+                  <p class="text-xs text-gray-500 mb-4">Ketik nama produk untuk melihat bagaimana AI memecah dan menimbang setiap kata.</p>
+                  <input
+                    v-model="demoProduct"
+                    type="text"
+                    placeholder="contoh: Lapis Talas Bogor"
+                    class="w-full px-4 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-emerald-500/60 transition mb-4"
+                  />
+                  <div class="space-y-2.5">
+                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Bobot TF-IDF per Kata:</p>
+                    <div v-if="demoTokens.length > 0" class="space-y-2">
+                      <div v-for="token in demoTokens" :key="token.token" class="flex items-center gap-3">
+                        <span class="font-mono text-xs text-emerald-400 w-28 shrink-0 truncate">“{{ token.token }}”</span>
+                        <div class="flex-1 bg-gray-800 rounded-full h-2 overflow-hidden">
+                          <div class="h-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500" :style="`width: ${token.score}%`" />
+                        </div>
+                        <span class="text-xs text-gray-400 font-mono w-10 text-right">{{ token.score.toFixed(0) }}%</span>
+                      </div>
+                    </div>
+                    <p v-else class="text-xs text-gray-600 italic">Ketik nama produk di atas...</p>
+                  </div>
+                </div>
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                  <p class="text-[11px] text-gray-500 uppercase tracking-wider font-semibold mb-3">Produk Paling Mirip (Cosine Similarity):</p>
+                  <div v-if="demoMatches.length > 0" class="space-y-2">
+                    <div v-for="match in demoMatches" :key="match.name" class="flex items-center justify-between bg-gray-800/60 rounded-xl px-3 py-2.5">
+                      <span class="text-xs text-gray-300 truncate flex-1 mr-2">{{ match.name }}</span>
+                      <div class="flex items-center gap-2 shrink-0">
+                        <div class="w-16 bg-gray-700 rounded-full h-1.5">
+                          <div class="h-1.5 rounded-full bg-violet-500 transition-all duration-500" :style="`width: ${match.sim}%`" />
+                        </div>
+                        <span class="text-xs font-bold text-violet-400 w-8 text-right">{{ match.sim }}%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p v-else class="text-xs text-gray-600 italic">Hasil kemiripan akan muncul di sini...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel Random Forest -->
+            <div v-else-if="activeAiTab === 'rf'" class="grid lg:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                  <div class="px-4 py-3 border-b border-gray-800 flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500/60" /><div class="w-3 h-3 rounded-full bg-yellow-500/60" /><div class="w-3 h-3 rounded-full bg-green-500/60" />
+                    <span class="ml-2 text-xs text-gray-500 font-mono">random_forest.math</span>
+                  </div>
+                  <div class="p-5 space-y-5 font-mono text-sm">
+                    <div>
+                      <p class="text-gray-500 text-[11px] mb-2.5">// Setiap pohon keputusan melakukan prediksi independen</p>
+                      <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
+                        <span class="text-amber-400">h<sub class="text-[9px]">n</sub></span><span class="text-gray-400">(x)</span>
+                        <span class="text-gray-500">=</span>
+                        <span class="text-gray-300">prediksi pohon ke-n</span>
+                        <span class="text-gray-500">∈ {&quot;Laku&quot;, &quot;Tidak&quot;}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <p class="text-gray-500 text-[11px] mb-2.5">// Probabilitas produk akan &quot;Laku&quot; (voting mayoritas)</p>
+                      <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
+                        <span class="text-emerald-400">P</span><span class="text-gray-400">(Laku | x)</span>
+                        <span class="text-gray-500">=</span>
+                        <div class="inline-flex flex-col items-center mx-1">
+                          <span class="text-amber-400 text-xs border-b border-gray-600 px-2 pb-1">Σ<sub>n</sub> 𝟙[h<sub>n</sub>(x) = &quot;Laku&quot;]</span>
+                          <span class="text-blue-400 text-xs pt-1">N (total pohon)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-3">
+                      <p class="text-gray-500 text-[11px] mb-2">// Konversi ke skala 0–100</p>
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-emerald-400 font-bold">Skor</span>
+                        <span class="text-gray-500">=</span>
+                        <span class="text-white">P</span><span class="text-gray-400">(Laku | x)</span>
+                        <span class="text-gray-500">× 100</span>
+                      </div>
+                    </div>
+                    <div>
+                      <p class="text-gray-500 text-[11px] mb-2">// Fitur input model Random Forest v3:</p>
+                      <div class="space-y-1.5">
+                        <div v-for="f in rfFeatures" :key="f.name" class="flex items-center gap-2 text-xs">
+                          <span class="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0" />
+                          <span class="text-gray-300 font-mono">{{ f.name }}</span>
+                          <span class="ml-auto text-gray-600">{{ f.type }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-4">
+                  <p class="text-xs text-amber-300 font-semibold mb-1.5">Mengapa Random Forest?</p>
+                  <p class="text-xs text-gray-400 leading-relaxed">Menggabungkan banyak pohon sederhana (bootstrap sampling) untuk hasil lebih akurat dan tahan terhadap overfitting dibanding model tunggal.</p>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                  <h4 class="text-sm font-bold text-white mb-1">🗳️ Simulasi Voting Pohon</h4>
+                  <p class="text-xs text-gray-500 mb-4">Klik pohon untuk <span class="text-emerald-400 font-semibold">toggle vote-nya</span> dan lihat bagaimana probabilitas berubah secara real-time.</p>
+                  <div class="grid grid-cols-5 gap-2 mb-4">
+                    <button
+                      v-for="tree in rfTrees"
+                      :key="tree.id"
+                      @click="toggleTreeVote(tree.id)"
+                      :class="[
+                        selectedTree === tree.id ? 'ring-2 ring-offset-1 ring-offset-gray-900 scale-105 shadow-lg' : 'hover:scale-105',
+                        tree.vote === 'laku' ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30',
+                        selectedTree === tree.id && tree.vote === 'laku' ? 'ring-emerald-500' : '',
+                        selectedTree === tree.id && tree.vote !== 'laku' ? 'ring-red-500' : '',
+                      ]"
+                      class="border rounded-xl p-2.5 transition-all duration-200 flex flex-col items-center gap-1.5 cursor-pointer"
+                    >
+                      <span class="text-xl">🌳</span>
+                      <span class="text-[10px] font-bold" :class="tree.vote === 'laku' ? 'text-emerald-400' : 'text-red-400'">
+                        {{ tree.vote === 'laku' ? '✓ Laku' : '✗ Tidak' }}
+                      </span>
+                      <span class="text-[9px] text-gray-600">Pohon {{ tree.id }}</span>
+                    </button>
+                  </div>
+                  <Transition name="tab-fade" mode="out-in">
+                    <div v-if="selectedTree !== null" :key="selectedTree" class="bg-gray-800/60 rounded-xl p-3 mb-4">
+                      <p class="text-[11px] font-semibold text-gray-300 mb-2">Pohon {{ selectedTree }} — Fitur yang Dipertimbangkan:</p>
+                      <div class="space-y-1">
+                        <div v-for="f in rfTrees.find(t => t.id === selectedTree)?.features" :key="f" class="flex items-center gap-2">
+                          <span class="w-1 h-1 rounded-full bg-teal-400 shrink-0" />
+                          <span class="text-xs text-gray-400">{{ f }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Transition>
+                  <div class="bg-gray-800/40 rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-3">
+                      <span class="text-xs text-gray-400">Hasil Voting:</span>
+                      <span class="text-sm font-bold font-mono" :class="rfVoteLaku >= Math.ceil(rfTrees.length / 2) ? 'text-emerald-400' : 'text-red-400'">
+                        P(Laku) = {{ rfVoteLaku }}/{{ rfTrees.length }} = {{ (rfVoteLaku / rfTrees.length * 100).toFixed(0) }}%
+                      </span>
+                    </div>
+                    <div class="flex gap-1 mb-2">
+                      <div
+                        v-for="tree in rfTrees"
+                        :key="tree.id"
+                        class="flex-1 h-4 rounded transition-all duration-300"
+                        :class="tree.vote === 'laku' ? 'bg-emerald-500' : 'bg-red-500/50'"
+                      />
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-[10px] text-emerald-400">{{ rfVoteLaku }} Laku ✓</span>
+                      <span class="text-[10px] text-red-400">{{ rfTrees.length - rfVoteLaku }} Tidak ✗</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel Analisis Harga -->
+            <div v-else-if="activeAiTab === 'harga'" class="grid lg:grid-cols-2 gap-6">
+              <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-gray-800 flex items-center gap-2">
+                  <div class="w-3 h-3 rounded-full bg-red-500/60" /><div class="w-3 h-3 rounded-full bg-yellow-500/60" /><div class="w-3 h-3 rounded-full bg-green-500/60" />
+                  <span class="ml-2 text-xs text-gray-500 font-mono">price_context.math</span>
+                </div>
+                <div class="p-5 space-y-5 font-mono text-sm">
+                  <div>
+                    <p class="text-gray-500 text-[11px] mb-2.5">// Median harga dari produk kompetitor sekategori</p>
+                    <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
+                      <span class="text-blue-400">M</span>
+                      <span class="text-gray-500">=</span>
+                      <span class="text-gray-300">median</span>
+                      <span class="text-gray-400">({ harga kompetitor di kategori })</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="text-gray-500 text-[11px] mb-2.5">// Selisih harga relatif terhadap pasar</p>
+                    <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
+                      <span class="text-emerald-400">δ</span>
+                      <span class="text-gray-500">=</span>
+                      <div class="inline-flex flex-col items-center mx-1">
+                        <span class="text-amber-400 text-xs border-b border-gray-600 px-3 pb-1">H<sub>input</sub> − M</span>
+                        <span class="text-blue-400 text-xs pt-1">M</span>
+                      </div>
+                      <span class="text-gray-500">× 100%</span>
+                    </div>
+                  </div>
+                  <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4 space-y-2.5">
+                    <p class="text-gray-500 text-[11px] mb-1">// Segmentasi risiko berdasarkan δ:</p>
+                    <div class="flex items-center gap-2">
+                      <span class="text-emerald-400 text-xs font-mono w-32">δ &lt; −20%</span>
+                      <span class="text-gray-600">→</span>
+                      <span class="px-2 py-0.5 bg-emerald-500/10 rounded text-emerald-300 text-xs font-semibold">Ekonomis</span>
+                      <span class="text-gray-600 text-[10px]">(lebih kompetitif)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-amber-400 text-xs font-mono w-32">−20% ≤ δ ≤ +20%</span>
+                      <span class="text-gray-600">→</span>
+                      <span class="px-2 py-0.5 bg-amber-500/10 rounded text-amber-300 text-xs font-semibold">Menengah</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-red-400 text-xs font-mono w-32">δ &gt; +20%</span>
+                      <span class="text-gray-600">→</span>
+                      <span class="px-2 py-0.5 bg-red-500/10 rounded text-red-300 text-xs font-semibold">Premium</span>
+                      <span class="text-gray-600 text-[10px]">(risiko tinggi)</span>
+                    </div>
+                  </div>
+                  <p class="text-[10px] text-gray-600 leading-relaxed">Harga bukan satu-satunya faktor, tapi produk dengan harga jauh di atas median pasar cenderung memiliki peluang laku lebih rendah tanpa diferensiasi yang kuat.</p>
+                </div>
+              </div>
+              <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                <h4 class="text-sm font-bold text-white mb-1">📐 Kalkulator Posisi Harga</h4>
+                <p class="text-xs text-gray-500 mb-5">Geser slider untuk melihat δ dan segmen risiko produkmu vs pasar secara real-time.</p>
+                <div class="space-y-5 mb-6">
+                  <div>
+                    <div class="flex justify-between mb-2">
+                      <label class="text-xs text-gray-400">Harga Produk Anda (H<sub>input</sub>)</label>
+                      <span class="text-sm font-bold text-white font-mono">Rp {{ calcHargaUser.toLocaleString('id-ID') }}</span>
+                    </div>
+                    <input type="range" v-model.number="calcHargaUser" min="10000" max="200000" step="1000" class="w-full accent-emerald-500 cursor-pointer" />
+                    <div class="flex justify-between mt-1 text-[10px] text-gray-600"><span>Rp 10.000</span><span>Rp 200.000</span></div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between mb-2">
+                      <label class="text-xs text-gray-400">Median Pasar Kategorimu (M)</label>
+                      <span class="text-sm font-bold text-blue-400 font-mono">Rp {{ calcMedianPasar.toLocaleString('id-ID') }}</span>
+                    </div>
+                    <input type="range" v-model.number="calcMedianPasar" min="10000" max="200000" step="1000" class="w-full accent-blue-500 cursor-pointer" />
+                    <div class="flex justify-between mt-1 text-[10px] text-gray-600"><span>Rp 10.000</span><span>Rp 200.000</span></div>
+                  </div>
+                </div>
+                <div
+                  class="border rounded-2xl p-4 transition-all duration-300"
+                  :class="priceSegmen === 'Ekonomis' ? 'bg-emerald-500/10 border-emerald-500/20' : priceSegmen === 'Premium' ? 'bg-red-500/10 border-red-500/20' : 'bg-amber-500/10 border-amber-500/20'"
+                >
+                  <div class="flex items-center justify-between mb-3">
+                    <div>
+                      <p class="text-[10px] text-gray-500 uppercase tracking-wide">Selisih (δ)</p>
+                      <p class="text-3xl font-extrabold mt-0.5 font-mono transition-colors duration-300"
+                        :class="priceSegmen === 'Ekonomis' ? 'text-emerald-400' : priceSegmen === 'Premium' ? 'text-red-400' : 'text-amber-400'"
+                      >{{ priceDiffPercent > 0 ? '+' : '' }}{{ priceDiffPercent.toFixed(1) }}%</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-[10px] text-gray-500 uppercase tracking-wide">Segmen Risiko</p>
+                      <p class="text-xl font-bold mt-0.5 transition-colors duration-300"
+                        :class="priceSegmen === 'Ekonomis' ? 'text-emerald-400' : priceSegmen === 'Premium' ? 'text-red-400' : 'text-amber-400'"
+                      >{{ priceSegmen }}</p>
+                    </div>
+                  </div>
+                  <div class="relative mb-2">
+                    <div class="bg-gray-800 h-3 rounded-full overflow-hidden">
+                      <div
+                        class="h-3 rounded-full transition-all duration-300"
+                        :class="priceSegmen === 'Ekonomis' ? 'bg-emerald-500' : priceSegmen === 'Premium' ? 'bg-red-500' : 'bg-amber-500'"
+                        :style="`width: ${Math.min(100, Math.max(3, (calcHargaUser / 200000) * 100))}%`"
+                      />
+                    </div>
+                    <div class="absolute top-0 h-3 w-0.5 bg-white/40" :style="`left: ${Math.min(99, Math.max(1, (calcMedianPasar / 200000) * 100))}%`" />
+                  </div>
+                  <div class="flex justify-between text-[10px] text-gray-600">
+                    <span>← Lebih murah</span><span class="text-white/30">│ median</span><span>Lebih mahal →</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel Skor Akhir -->
+            <div v-else-if="activeAiTab === 'final'" class="grid lg:grid-cols-2 gap-6">
+              <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-gray-800 flex items-center gap-2">
+                  <div class="w-3 h-3 rounded-full bg-red-500/60" /><div class="w-3 h-3 rounded-full bg-yellow-500/60" /><div class="w-3 h-3 rounded-full bg-green-500/60" />
+                  <span class="ml-2 text-xs text-gray-500 font-mono">final_score.math</span>
+                </div>
+                <div class="p-5 font-mono text-sm space-y-4">
+                  <p class="text-gray-500 text-[11px]">// Pipeline lengkap sistem prediksi RadarUMKM:</p>
+                  <div class="space-y-2.5">
+                    <div v-for="(step, i) in pipelineFormula" :key="i" class="flex items-start gap-3 bg-gray-800/40 rounded-xl p-3">
+                      <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold shrink-0 mt-0.5" :class="step.bg + ' ' + step.textColor">{{ i + 1 }}</span>
+                      <div>
+                        <p class="text-xs" :class="step.textColor">{{ step.code }}</p>
+                        <p class="text-[10px] text-gray-600 mt-0.5">{{ step.desc }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4">
+                    <p class="text-gray-500 text-[11px] mb-2">// Output akhir yang ditampilkan ke pengguna</p>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-emerald-400 font-bold">Skor_Akhir</span>
+                      <span class="text-gray-500">=</span>
+                      <span class="text-white">P</span><span class="text-gray-400">(Laku | x)</span>
+                      <span class="text-gray-500">× 100</span>
+                    </div>
+                  </div>
+                  <div class="space-y-2">
+                    <p class="text-gray-500 text-[11px]">// Interpretasi skor hasil:</p>
+                    <div v-for="thresh in scoreThresholds" :key="thresh.label" class="flex items-center gap-2 text-xs">
+                      <div class="w-8 h-1.5 rounded-full shrink-0" :class="thresh.barColor" />
+                      <span class="font-mono" :class="thresh.textColor">{{ thresh.range }}</span>
+                      <span class="text-gray-600">→</span>
+                      <span class="text-gray-300">{{ thresh.label }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                  <h4 class="text-sm font-bold text-white mb-4">Alur Prediksi Visual</h4>
+                  <div class="space-y-2">
+                    <div v-for="(step, i) in pipelineSteps" :key="i" class="flex items-center gap-3 p-2.5 bg-gray-800/40 rounded-xl">
+                      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0" :class="step.bg">{{ step.icon }}</div>
+                      <div class="flex-1">
+                        <p class="text-xs font-semibold text-gray-200">{{ step.title }}</p>
+                        <p class="text-[10px] text-gray-500">{{ step.desc }}</p>
+                      </div>
+                      <UIcon v-if="i < pipelineSteps.length - 1" name="i-heroicons-arrow-right" class="w-3 h-3 text-gray-700 shrink-0" />
+                      <UIcon v-else name="i-heroicons-check-circle" class="w-4 h-4 text-emerald-500 shrink-0" />
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-5 space-y-3">
+                  <p class="text-xs text-emerald-400 font-bold">📊 Spesifikasi Model</p>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-white">≥92%</p><p class="text-[10px] text-gray-500 mt-0.5">Akurasi Validasi</p></div>
+                    <div class="bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-white">1.027+</p><p class="text-[10px] text-gray-500 mt-0.5">Data Training</p></div>
+                    <div class="bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-white">3</p><p class="text-[10px] text-gray-500 mt-0.5">Marketplace Sumber</p></div>
+                    <div class="bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-white">v3</p><p class="text-[10px] text-gray-500 mt-0.5">Versi Model RF</p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </Transition>
+
+        <!-- Live Calculator -->
+        <div class="mt-10 bg-gray-900 border border-gray-700/60 rounded-2xl overflow-hidden">
+          <div class="px-5 py-4 border-b border-gray-800 flex items-center gap-3">
+            <div class="w-9 h-9 bg-emerald-500/10 rounded-xl flex items-center justify-center shrink-0"><span class="text-base">🧮</span></div>
+            <div>
+              <h3 class="text-sm font-bold text-white">Kalkulator Skor Interaktif</h3>
+              <p class="text-xs text-gray-500">Geser slider dan lihat skor prediksi berubah secara real-time</p>
+            </div>
+          </div>
+          <div class="p-5 grid md:grid-cols-2 gap-8 items-start">
+            <div class="space-y-6">
+              <div>
+                <div class="flex justify-between mb-2">
+                  <label class="text-xs text-gray-400">Kemiripan Nama dengan Top Seller</label>
+                  <span class="text-sm font-bold text-emerald-400 font-mono">{{ calcSimilarity }}%</span>
+                </div>
+                <input type="range" v-model.number="calcSimilarity" min="0" max="100" class="w-full accent-emerald-500 cursor-pointer" />
+                <p class="text-[10px] text-gray-600 mt-1">Semakin mirip nama dengan produk populer → bobot TF-IDF lebih tinggi → fitur RF lebih kuat</p>
+              </div>
+              <div>
+                <div class="flex justify-between mb-2">
+                  <label class="text-xs text-gray-400">Popularitas Kategori &amp; Sub-Kategori</label>
+                  <span class="text-sm font-bold text-blue-400 font-mono">{{ calcPopularity }}%</span>
+                </div>
+                <input type="range" v-model.number="calcPopularity" min="0" max="100" class="w-full accent-blue-500 cursor-pointer" />
+                <p class="text-[10px] text-gray-600 mt-1">Volume penjualan kategori di pasar Bogor relatif terhadap semua kategori</p>
+              </div>
+              <div>
+                <div class="flex justify-between mb-2">
+                  <label class="text-xs text-gray-400">Selisih Harga vs Median Pasar (δ)</label>
+                  <span class="text-sm font-bold font-mono" :class="calcPriceDiff > 20 ? 'text-red-400' : calcPriceDiff < -20 ? 'text-emerald-400' : 'text-amber-400'">
+                    {{ calcPriceDiff > 0 ? '+' : '' }}{{ calcPriceDiff }}%
+                  </span>
+                </div>
+                <input type="range" v-model.number="calcPriceDiff" min="-50" max="100" class="w-full accent-amber-500 cursor-pointer" />
+                <p class="text-[10px] text-gray-600 mt-1">Negatif = lebih murah dari pasar (kompetitif) · Positif = lebih mahal (risiko)</p>
+              </div>
+            </div>
+            <div>
+              <div
+                class="border rounded-2xl p-6 text-center transition-all duration-300"
+                :class="calcFinalScore >= 70 ? 'bg-emerald-500/10 border-emerald-500/20' : calcFinalScore >= 40 ? 'bg-amber-500/10 border-amber-500/20' : 'bg-red-500/10 border-red-500/20'"
+              >
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-2">Estimasi Skor Prediksi</p>
+                <div class="flex items-end justify-center gap-1 mb-2">
+                  <span class="text-6xl font-extrabold transition-colors duration-300 font-mono"
+                    :class="calcFinalScore >= 70 ? 'text-emerald-400' : calcFinalScore >= 40 ? 'text-amber-400' : 'text-red-400'"
+                  >{{ calcFinalScore.toFixed(1) }}</span>
+                  <span class="text-2xl text-gray-600 mb-2">%</span>
+                </div>
+                <p class="text-sm font-bold mb-4"
+                  :class="calcFinalScore >= 70 ? 'text-emerald-300' : calcFinalScore >= 40 ? 'text-amber-300' : 'text-red-300'"
+                >{{ calcFinalScore >= 70 ? '🌟 SANGAT MENARIK' : calcFinalScore >= 40 ? '✅ CUKUP MENARIK' : '⚠️ KURANG MENARIK' }}</p>
+                <div class="bg-gray-800 rounded-full h-2 overflow-hidden mb-4">
+                  <div
+                    class="h-2 rounded-full transition-all duration-500"
+                    :class="calcFinalScore >= 70 ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : calcFinalScore >= 40 ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-red-500 to-rose-500'"
+                    :style="`width: ${calcFinalScore}%`"
+                  />
+                </div>
+                <div class="text-left bg-gray-800/60 rounded-xl p-3 space-y-1.5 text-xs font-mono">
+                  <div class="flex justify-between text-gray-400">
+                    <span class="text-emerald-400">RF_prob</span><span>= {{ calcRfProb.toFixed(3) }}</span>
+                  </div>
+                  <div class="flex justify-between text-gray-400">
+                    <span class="text-amber-400">price_adj</span><span>= × {{ calcPriceAdjustment.toFixed(2) }}</span>
+                  </div>
+                  <div class="border-t border-gray-700 pt-1.5 flex justify-between font-bold text-white">
+                    <span>Skor_Akhir</span><span>= {{ calcFinalScore.toFixed(1) }}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- ── CTA ── -->
     <section class="py-28 relative overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-700" />
@@ -453,6 +964,7 @@ const handleRegister = async () => {
 const navLinks = [
   { id: 'fitur', label: 'Fitur' },
   { id: 'cara-kerja', label: 'Cara Kerja' },
+  { id: 'cara-kerja-ai', label: 'Cara Kerja AI' },
 ];
 
 const avatarGradients = ['from-emerald-400 to-teal-500', 'from-violet-400 to-purple-500', 'from-blue-400 to-indigo-500', 'from-orange-400 to-rose-500'];
@@ -528,6 +1040,116 @@ const features = [
   },
 ];
 
+// ── Cara Kerja AI ────────────────────────────────────────────────────────────────────────────
+const activeAiTab = ref('tfidf');
+
+const aiTabs = [
+  { id: 'tfidf', icon: '🔍', label: 'TF-IDF & Cosine' },
+  { id: 'rf', icon: '🌳', label: 'Random Forest' },
+  { id: 'harga', icon: '💰', label: 'Analisis Harga' },
+  { id: 'final', icon: '📊', label: 'Skor Akhir' },
+];
+
+// TF-IDF Demo
+const demoProduct = ref('Lapis Talas Bogor');
+const tokenWeights: Record<string, number> = {
+  lapis: 83, talas: 91, bogor: 88, kue: 74, snack: 71, kopi: 85,
+  batik: 78, keripik: 76, dodol: 83, original: 62, premium: 68,
+  tradisional: 79, spesial: 65, homemade: 72, roti: 69, minuman: 66,
+  pakaian: 75, aksesoris: 70, souvenir: 73, coklat: 77, susu: 64,
+};
+const demoTokens = computed(() => {
+  const words = demoProduct.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return words.map((token) => ({
+    token,
+    score: tokenWeights[token] ?? Math.min(90, Math.max(35, 40 + ((token.charCodeAt(0) + token.length * 7) % 48))),
+  }));
+});
+const demoMatches = computed(() => {
+  if (!demoProduct.value.trim() || demoTokens.value.length === 0) return [];
+  const avg = demoTokens.value.reduce((s, t) => s + t.score, 0) / demoTokens.value.length;
+  return [
+    { name: `${demoProduct.value} Original 250g`, sim: Math.min(97, Math.floor(avg + 5)) },
+    { name: `${demoProduct.value} Premium Box`, sim: Math.min(92, Math.floor(avg - 4)) },
+    { name: `${demoProduct.value} Spesial Gift`, sim: Math.min(87, Math.floor(avg - 10)) },
+    { name: `${demoProduct.value} Mini Pack`, sim: Math.min(80, Math.floor(avg - 17)) },
+  ].filter(m => m.sim > 20).sort((a, b) => b.sim - a.sim);
+});
+
+// Random Forest
+const rfTrees = ref([
+  { id: 1, vote: 'laku', features: ['Kemiripan nama: 78%', 'Harga: Menengah (Rp 45rb)', 'Sub-kategori: Populer'] },
+  { id: 2, vote: 'laku', features: ['Rating rata-rata kompetitor: 4.7⭐', 'Jumlah terjual: 1.2k/bln', 'Marketplace: Shopee'] },
+  { id: 3, vote: 'tidak', features: ['Harga: +35% dari median pasar', 'Kompetitor aktif: 40+ produk', 'Kemiripan rendah: 45%'] },
+  { id: 4, vote: 'laku', features: ['Kemiripan nama: 82%', 'Rating kompetitor: 4.8⭐', 'Penjualan: Volume tinggi'] },
+  { id: 5, vote: 'laku', features: ['Sub-kategori terpopuler', 'Harga menengah pasar', 'Produk serupa banyak laku'] },
+]);
+const selectedTree = ref<number | null>(null);
+const rfVoteLaku = computed(() => rfTrees.value.filter(t => t.vote === 'laku').length);
+const rfFeatures = [
+  { name: 'avg_rating_kompetitor', type: 'float' },
+  { name: 'avg_jumlah_terjual', type: 'int' },
+  { name: 'avg_harga_kompetitor', type: 'float' },
+  { name: 'harga_input', type: 'float' },
+  { name: 'tfidf_similarity_score', type: 'float' },
+  { name: 'kategori_encoded', type: 'int (label)' },
+  { name: 'sub_kategori_encoded', type: 'int (label)' },
+];
+const toggleTreeVote = (id: number) => {
+  const tree = rfTrees.value.find(t => t.id === id);
+  if (tree) tree.vote = tree.vote === 'laku' ? 'tidak' : 'laku';
+  selectedTree.value = selectedTree.value === id ? null : id;
+};
+
+// Price Analysis
+const calcHargaUser = ref(50000);
+const calcMedianPasar = ref(45000);
+const priceDiffPercent = computed(() => ((calcHargaUser.value - calcMedianPasar.value) / calcMedianPasar.value) * 100);
+const priceSegmen = computed(() => {
+  if (priceDiffPercent.value < -20) return 'Ekonomis';
+  if (priceDiffPercent.value > 20) return 'Premium';
+  return 'Menengah';
+});
+
+// Live Calculator
+const calcSimilarity = ref(72);
+const calcPopularity = ref(65);
+const calcPriceDiff = ref(5);
+const calcRfProb = computed(() => {
+  const base = (calcSimilarity.value * 0.6 + calcPopularity.value * 0.4) / 100;
+  return Math.min(0.98, Math.max(0.02, base));
+});
+const calcPriceAdjustment = computed(() => {
+  const d = calcPriceDiff.value;
+  if (d > 50) return 0.65;
+  if (d > 30) return 0.78;
+  if (d > 20) return 0.88;
+  if (d < -20) return 0.97;
+  return 1.0;
+});
+const calcFinalScore = computed(() => Math.min(100, Math.max(0, calcRfProb.value * 100 * calcPriceAdjustment.value)));
+
+// Static display data
+const scoreThresholds = [
+  { range: 'Skor ≥ 70', label: 'Sangat Menarik 🌟', barColor: 'bg-emerald-500', textColor: 'text-emerald-400' },
+  { range: '40 ≤ Skor < 70', label: 'Cukup Menarik ✅', barColor: 'bg-amber-500', textColor: 'text-amber-400' },
+  { range: 'Skor < 40', label: 'Kurang Menarik ⚠️', barColor: 'bg-red-500', textColor: 'text-red-400' },
+];
+const pipelineFormula = [
+  { code: 'vec = TF_IDF.transform(nama_produk)', desc: 'Nama produk → vektor numerik', bg: 'bg-violet-500/15', textColor: 'text-violet-400' },
+  { code: 'topK = cosine_similarity(vec, dataset)', desc: 'Temukan K produk paling mirip', bg: 'bg-blue-500/15', textColor: 'text-blue-400' },
+  { code: 'features = aggregate(topK, H_input)', desc: 'Agregasi fitur dari produk serupa', bg: 'bg-amber-500/15', textColor: 'text-amber-400' },
+  { code: 'P = RandomForest.predict_proba(features)', desc: 'N pohon voting → P(Laku|x)', bg: 'bg-emerald-500/15', textColor: 'text-emerald-400' },
+  { code: 'Skor = P[1] × 100', desc: 'Konversi probabilitas ke skala 0–100', bg: 'bg-teal-500/15', textColor: 'text-teal-400' },
+];
+const pipelineSteps = [
+  { icon: '📝', title: 'Input Produk', desc: 'Nama, kategori, harga', bg: 'bg-gray-700' },
+  { icon: '🔍', title: 'TF-IDF', desc: 'Vektorisasi nama', bg: 'bg-violet-900/60' },
+  { icon: '🔗', title: 'Cosine Sim', desc: 'Cari produk mirip', bg: 'bg-blue-900/60' },
+  { icon: '🌳', title: 'Random Forest', desc: 'Voting N pohon', bg: 'bg-emerald-900/60' },
+  { icon: '📊', title: 'Skor Akhir', desc: 'Output prediksi', bg: 'bg-teal-900/60' },
+];
+
 const steps = [
   {
     title: 'Masukkan Data Produk',
@@ -550,4 +1172,7 @@ const steps = [
 <style scoped>
 .modal-enter-active, .modal-leave-active { transition: opacity 0.25s ease; }
 .modal-enter-from, .modal-leave-to { opacity: 0; }
+.tab-fade-enter-active, .tab-fade-leave-active { transition: opacity 0.18s ease, transform 0.18s ease; }
+.tab-fade-enter-from { opacity: 0; transform: translateY(10px); }
+.tab-fade-leave-to { opacity: 0; transform: translateY(-10px); }
 </style>
