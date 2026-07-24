@@ -23,7 +23,7 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <!-- ── Form Panel ── -->
-        <div class="lg:col-span-2 space-y-4">
+        <div :class="result && !loading ? 'order-2' : 'order-1'" class="lg:order-none lg:col-span-2 space-y-4">
           <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 flex items-center gap-2">
               <div class="p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
@@ -134,7 +134,7 @@
         </div>
 
         <!-- ── Results Panel ── -->
-        <div class="lg:col-span-3 space-y-4">
+        <div :class="result && !loading ? 'order-1' : 'order-2'" class="lg:order-none lg:col-span-3 space-y-4">
           <!-- Empty State -->
           <div
             v-if="!result && !loading && !prediksiError"
