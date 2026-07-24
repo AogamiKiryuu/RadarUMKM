@@ -266,19 +266,19 @@
             <!-- Panel TF-IDF -->
             <div v-if="activeAiTab === 'tfidf'" class="grid lg:grid-cols-2 gap-6">
               <div class="space-y-4">
-                <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
-                  <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2 bg-gray-50 dark:bg-gray-900">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+                  <div class="px-4 py-3 border-b border-gray-800 flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full bg-red-500/60" /><div class="w-3 h-3 rounded-full bg-yellow-500/60" /><div class="w-3 h-3 rounded-full bg-green-500/60" />
                     <span class="ml-2 text-xs text-gray-500 font-mono">tfidf_cosine.math</span>
                   </div>
                   <div class="p-5 space-y-5 font-mono text-sm">
                     <div>
                       <p class="text-gray-500 text-[11px] mb-2.5">// 1. Term Frequency — frekuensi kata dalam nama produk</p>
-                      <div class="flex items-center gap-2 flex-wrap bg-gray-100 dark:bg-gray-800/40 rounded-xl p-3">
+                      <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
                         <span class="text-emerald-400">TF</span><span class="text-gray-400">(t, d)</span>
                         <span class="text-gray-500">=</span>
                         <div class="inline-flex flex-col items-center">
-                          <span class="text-amber-400 text-xs border-b border-gray-300 dark:border-gray-600 px-3 pb-1">frekuensi(t, d)</span>
+                          <span class="text-amber-400 text-xs border-b border-gray-600 px-3 pb-1">frekuensi(t, d)</span>
                           <span class="text-blue-400 text-xs pt-1">Σ frekuensi semua kata</span>
                         </div>
                       </div>
@@ -288,9 +288,9 @@
                       <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
                         <span class="text-emerald-400">IDF</span><span class="text-gray-400">(t)</span>
                         <span class="text-gray-500">=</span>
-                        <span class="text-gray-900 dark:text-white">log</span>
+                        <span class="text-white">log</span>
                         <div class="inline-flex flex-col items-center mx-1">
-                          <span class="text-amber-400 text-xs border-b border-gray-300 dark:border-gray-600 px-2 pb-1">N (total produk)</span>
+                          <span class="text-amber-400 text-xs border-b border-gray-600 px-2 pb-1">N (total produk)</span>
                           <span class="text-blue-400 text-xs pt-1">df(t) (produk mengandung t)</span>
                         </div>
                         <span class="text-gray-500">+ 1</span>
@@ -312,7 +312,7 @@
                         <span class="text-violet-400">sim</span><span class="text-gray-400">(A, B)</span>
                         <span class="text-gray-500">=</span>
                         <div class="inline-flex flex-col items-center mx-1">
-                          <span class="text-amber-400 text-xs border-b border-gray-300 dark:border-gray-600 px-3 pb-1">A · B</span>
+                          <span class="text-amber-400 text-xs border-b border-gray-600 px-3 pb-1">A · B</span>
                           <span class="text-blue-400 text-xs pt-1">‖A‖ × ‖B‖</span>
                         </div>
                         <span class="text-gray-500">∈ [0, 1]</span>
@@ -375,20 +375,20 @@
                   <div class="p-5 space-y-5 font-mono text-sm">
                     <div>
                       <p class="text-gray-500 text-[11px] mb-2.5">// Setiap pohon keputusan melakukan prediksi independen</p>
-                      <div class="flex items-center gap-2 flex-wrap bg-gray-100 dark:bg-gray-800/40 rounded-xl p-3">
+                      <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
                         <span class="text-amber-400">h<sub class="text-[9px]">n</sub></span><span class="text-gray-400">(x)</span>
                         <span class="text-gray-500">=</span>
-                        <span class="text-gray-700 dark:text-gray-300">prediksi pohon ke-n</span>
+                        <span class="text-gray-300">prediksi pohon ke-n</span>
                         <span class="text-gray-500">∈ {&quot;Laku&quot;, &quot;Tidak&quot;}</span>
                       </div>
                     </div>
                     <div>
                       <p class="text-gray-500 text-[11px] mb-2.5">// Probabilitas produk akan &quot;Laku&quot; (voting mayoritas)</p>
-                      <div class="flex items-center gap-2 flex-wrap bg-gray-100 dark:bg-gray-800/40 rounded-xl p-3">
+                      <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
                         <span class="text-emerald-400">P</span><span class="text-gray-400">(Laku | x)</span>
                         <span class="text-gray-500">=</span>
                         <div class="inline-flex flex-col items-center mx-1">
-                          <span class="text-amber-400 text-xs border-b border-gray-300 dark:border-gray-600 px-2 pb-1">Σ<sub>n</sub> 𝟙[h<sub>n</sub>(x) = &quot;Laku&quot;]</span>
+                          <span class="text-amber-400 text-xs border-b border-gray-600 px-2 pb-1">Σ<sub>n</sub> 𝟙[h<sub>n</sub>(x) = &quot;Laku&quot;]</span>
                           <span class="text-blue-400 text-xs pt-1">N (total pohon)</span>
                         </div>
                       </div>
@@ -398,7 +398,7 @@
                       <div class="flex items-center gap-2 flex-wrap">
                         <span class="text-emerald-400 font-bold">Skor</span>
                         <span class="text-gray-500">=</span>
-                        <span class="text-gray-900 dark:text-white">P</span><span class="text-gray-400">(Laku | x)</span>
+                        <span class="text-white">P</span><span class="text-gray-400">(Laku | x)</span>
                         <span class="text-gray-500">× 100</span>
                       </div>
                     </div>
@@ -407,7 +407,7 @@
                       <div class="space-y-1.5">
                         <div v-for="f in rfFeatures" :key="f.name" class="flex items-center gap-2 text-xs">
                           <span class="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0" />
-                          <span class="text-gray-700 dark:text-gray-300 font-mono">{{ f.name }}</span>
+                          <span class="text-gray-300 font-mono">{{ f.name }}</span>
                           <span class="ml-auto text-gray-600">{{ f.type }}</span>
                         </div>
                       </div>
@@ -480,7 +480,7 @@
 
             <!-- Panel Analisis Harga -->
             <div v-else-if="activeAiTab === 'harga'" class="grid lg:grid-cols-2 gap-6">
-              <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
+              <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
                 <div class="px-4 py-3 border-b border-gray-800 flex items-center gap-2">
                   <div class="w-3 h-3 rounded-full bg-red-500/60" /><div class="w-3 h-3 rounded-full bg-yellow-500/60" /><div class="w-3 h-3 rounded-full bg-green-500/60" />
                   <span class="ml-2 text-xs text-gray-500 font-mono">price_context.math</span>
@@ -488,20 +488,20 @@
                 <div class="p-5 space-y-5 font-mono text-sm">
                   <div>
                     <p class="text-gray-500 text-[11px] mb-2.5">// Median harga dari produk kompetitor sekategori</p>
-                    <div class="flex items-center gap-2 flex-wrap bg-gray-100 dark:bg-gray-800/40 rounded-xl p-3">
+                    <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
                       <span class="text-blue-400">M</span>
                       <span class="text-gray-500">=</span>
-                      <span class="text-gray-700 dark:text-gray-300">median</span>
+                      <span class="text-gray-300">median</span>
                       <span class="text-gray-400">({ harga kompetitor di kategori })</span>
                     </div>
                   </div>
                   <div>
                     <p class="text-gray-500 text-[11px] mb-2.5">// Selisih harga relatif terhadap pasar</p>
-                    <div class="flex items-center gap-2 flex-wrap bg-gray-100 dark:bg-gray-800/40 rounded-xl p-3">
+                    <div class="flex items-center gap-2 flex-wrap bg-gray-800/40 rounded-xl p-3">
                       <span class="text-emerald-400">δ</span>
                       <span class="text-gray-500">=</span>
                       <div class="inline-flex flex-col items-center mx-1">
-                        <span class="text-amber-400 text-xs border-b border-gray-300 dark:border-gray-600 px-3 pb-1">H<sub>input</sub> − M</span>
+                        <span class="text-amber-400 text-xs border-b border-gray-600 px-3 pb-1">H<sub>input</sub> − M</span>
                         <span class="text-blue-400 text-xs pt-1">M</span>
                       </div>
                       <span class="text-gray-500">× 100%</span>
@@ -596,7 +596,7 @@
                 <div class="p-5 font-mono text-sm space-y-4">
                   <p class="text-gray-500 text-[11px]">// Pipeline lengkap sistem prediksi RadarUMKM:</p>
                   <div class="space-y-2.5">
-                    <div v-for="(step, i) in pipelineFormula" :key="i" class="flex items-start gap-3 bg-gray-100 dark:bg-gray-800/40 rounded-xl p-3">
+                    <div v-for="(step, i) in pipelineFormula" :key="i" class="flex items-start gap-3 bg-gray-800/40 rounded-xl p-3">
                       <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold shrink-0 mt-0.5" :class="step.bg + ' ' + step.textColor">{{ i + 1 }}</span>
                       <div>
                         <p class="text-xs" :class="step.textColor">{{ step.code }}</p>
@@ -609,7 +609,7 @@
                     <div class="flex items-center gap-2 flex-wrap">
                       <span class="text-emerald-400 font-bold">Skor_Akhir</span>
                       <span class="text-gray-500">=</span>
-                      <span class="text-gray-900 dark:text-white">P</span><span class="text-gray-400">(Laku | x)</span>
+                      <span class="text-white">P</span><span class="text-gray-400">(Laku | x)</span>
                       <span class="text-gray-500">× 100</span>
                     </div>
                   </div>
@@ -619,7 +619,7 @@
                       <div class="w-8 h-1.5 rounded-full shrink-0" :class="thresh.barColor" />
                       <span class="font-mono" :class="thresh.textColor">{{ thresh.range }}</span>
                       <span class="text-gray-600">→</span>
-                      <span class="text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                      <span class="text-gray-300 flex items-center gap-1">
                         {{ thresh.label }}
                         <UIcon :name="thresh.icon" :class="thresh.textColor" class="w-3.5 h-3.5" />
                       </span>
