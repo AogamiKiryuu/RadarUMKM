@@ -124,7 +124,7 @@
                 </div>
                 <div class="text-right shrink-0">
                   <p class="text-sm font-bold text-gray-900 dark:text-white">Rp {{ formatNumber(produk.harga) }}</p>
-                  <p class="text-xs text-amber-500">⭐ {{ produk.rating }}</p>
+                  <p class="text-xs text-amber-500 flex items-center gap-0.5 justify-end"><UIcon name="i-heroicons-star-solid" class="w-3 h-3" /> {{ produk.rating }}</p>
                   <p class="text-xs text-gray-400">{{ formatNumber(produk.jumlahTerjual) }} terjual</p>
                 </div>
               </div>
@@ -188,7 +188,10 @@
                     <span class="text-6xl font-extrabold leading-none tracking-tight">{{ result.predictionScore.toFixed(1) }}</span>
                     <span class="text-2xl font-medium mb-1 text-white/80">%</span>
                   </div>
-                  <p class="font-semibold text-sm mb-3">{{ getKesimpulanLabel(result.kesimpulan) }}</p>
+                  <p class="font-semibold text-sm mb-3 flex items-center gap-1.5">
+                    <UIcon :name="result.predictionScore >= 70 ? 'i-heroicons-star-solid' : result.predictionScore >= 40 ? 'i-heroicons-check-circle-solid' : 'i-heroicons-exclamation-triangle-solid'" class="w-4 h-4" />
+                    {{ getKesimpulanLabel(result.kesimpulan) }}
+                  </p>
                   <!-- Progress bar -->
                   <div class="bg-white/20 rounded-full h-2 w-48">
                     <div class="h-2 rounded-full bg-white transition-all duration-700" :style="`width: ${result.predictionScore}%`" />
@@ -304,7 +307,7 @@
                       </div>
                       <div class="text-right">
                         <p class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ sub.total_terjual?.toLocaleString('id-ID') }} terjual</p>
-                        <p class="text-[10px] text-gray-400">⭐ {{ sub.avg_rating }}</p>
+                        <p class="text-[10px] text-gray-400 flex items-center gap-0.5 justify-end"><UIcon name="i-heroicons-star-solid" class="w-2.5 h-2.5" /> {{ sub.avg_rating }}</p>
                       </div>
                     </div>
                   </div>
@@ -359,7 +362,7 @@
             </div>
             <div class="text-right shrink-0">
               <p class="text-sm font-bold text-gray-900 dark:text-white">Rp {{ formatNumber(product.harga_produk) }}</p>
-              <p class="text-xs text-amber-500">⭐ {{ product.rating }}</p>
+              <p class="text-xs text-amber-500 flex items-center gap-0.5 justify-end"><UIcon name="i-heroicons-star-solid" class="w-3 h-3" /> {{ product.rating }}</p>
               <p class="text-xs text-gray-400">{{ formatNumber(product.jumlah_terjual) }} terjual</p>
             </div>
           </div>
@@ -397,9 +400,9 @@ const formatNumber = (num: number) => num?.toLocaleString('id-ID') ?? '0';
 
 const getKesimpulanLabel = (kesimpulan: string) => {
   if (!kesimpulan) return '';
-  if (kesimpulan.includes('SANGAT')) return '🌟 Sangat Menarik';
-  if (kesimpulan.includes('CUKUP')) return '✅ Cukup Menarik';
-  return '⚠️ Kurang Menarik';
+  if (kesimpulan.includes('SANGAT')) return 'Sangat Menarik';
+  if (kesimpulan.includes('CUKUP')) return 'Cukup Menarik';
+  return 'Kurang Menarik';
 };
 
 const handlePrediksi = async () => {

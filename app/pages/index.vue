@@ -126,7 +126,7 @@
                     <p class="text-5xl font-extrabold leading-none">83.4</p>
                     <span class="text-xl font-normal opacity-70 mb-1">%</span>
                   </div>
-                  <p class="font-semibold text-sm mb-3">🌟 SANGAT MENARIK</p>
+                  <p class="font-semibold text-sm mb-3 flex items-center gap-1"><UIcon name="i-heroicons-star-solid" class="w-4 h-4 text-emerald-300" /> SANGAT MENARIK</p>
                   <div class="bg-white/20 rounded-full h-1.5">
                     <div class="h-1.5 rounded-full bg-white w-[83%]" />
                   </div>
@@ -144,7 +144,7 @@
                   <div v-for="c in mockTopProducts" :key="c.name" class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded-xl px-3 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/80 transition-colors">
                     <div class="min-w-0">
                       <span class="text-xs text-gray-700 dark:text-gray-300 font-medium truncate block">{{ c.name }}</span>
-                      <span class="text-[10px] text-amber-500">⭐ {{ c.rating }} · {{ c.sold }} terjual</span>
+                      <span class="text-[10px] text-amber-500 flex items-center gap-0.5"><UIcon name="i-heroicons-star-solid" class="w-3 h-3" /> {{ c.rating }} · {{ c.sold }} terjual</span>
                     </div>
                     <span class="text-xs font-bold text-emerald-600 shrink-0 ml-2">Rp {{ c.price }}</span>
                   </div>
@@ -249,9 +249,10 @@
             :class="activeAiTab === tab.id
               ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 shadow-lg shadow-emerald-900/20'
               : 'border-gray-300 dark:border-gray-700/50 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-400 dark:hover:border-gray-600 bg-white dark:bg-transparent'
+            "
             class="px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all duration-200 flex items-center gap-2 whitespace-nowrap"
           >
-            <span class="text-base">{{ tab.icon }}</span>
+            <UIcon :name="tab.icon" class="w-5 h-5" />
             <span>{{ tab.label }}</span>
             <span v-if="activeAiTab === tab.id" class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
           </button>
@@ -322,7 +323,7 @@
               </div>
               <div class="space-y-4">
                 <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5">
-                  <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1">🔬 Demo Tokenisasi Interaktif</h4>
+                  <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-1.5"><UIcon name="i-heroicons-beaker" class="w-4 h-4 text-gray-500" /> Demo Tokenisasi Interaktif</h4>
                   <p class="text-xs text-gray-500 mb-4">Ketik nama produk untuk melihat bagaimana AI memecah dan menimbang setiap kata.</p>
                   <input
                     v-model="demoProduct"
@@ -419,7 +420,7 @@
               </div>
               <div class="space-y-4">
                 <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5">
-                  <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1">🗳️ Simulasi Voting Pohon</h4>
+                  <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-1.5"><UIcon name="i-heroicons-inbox-arrow-down" class="w-4 h-4 text-gray-500" /> Simulasi Voting Pohon</h4>
                   <p class="text-xs text-gray-500 mb-4">Klik pohon untuk <span class="text-emerald-400 font-semibold">toggle vote-nya</span> dan lihat bagaimana probabilitas berubah secara real-time.</p>
                   <div class="grid grid-cols-5 gap-2 mb-4">
                     <button
@@ -434,9 +435,9 @@
                       ]"
                       class="border rounded-xl p-2.5 transition-all duration-200 flex flex-col items-center gap-1.5 cursor-pointer"
                     >
-                      <span class="text-xl">🌳</span>
-                      <span class="text-[10px] font-bold" :class="tree.vote === 'laku' ? 'text-emerald-400' : 'text-red-400'">
-                        {{ tree.vote === 'laku' ? '✓ Laku' : '✗ Tidak' }}
+                      <UIcon name="i-heroicons-cpu-chip" class="w-6 h-6 mb-1 transition-colors" :class="tree.vote === 'laku' ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'" />
+                      <span class="text-[10px] font-bold flex items-center gap-0.5" :class="tree.vote === 'laku' ? 'text-emerald-400' : 'text-red-400'">
+                        <UIcon :name="tree.vote === 'laku' ? 'i-heroicons-check' : 'i-heroicons-x-mark'" class="w-3 h-3" /> {{ tree.vote === 'laku' ? 'Laku' : 'Tidak' }}
                       </span>
                       <span class="text-[9px] text-gray-600">Pohon {{ tree.id }}</span>
                     </button>
@@ -468,8 +469,8 @@
                       />
                     </div>
                     <div class="flex justify-between">
-                      <span class="text-[10px] text-emerald-400">{{ rfVoteLaku }} Laku ✓</span>
-                      <span class="text-[10px] text-red-400">{{ rfTrees.length - rfVoteLaku }} Tidak ✗</span>
+                      <span class="text-[10px] text-emerald-400 flex items-center gap-0.5">{{ rfVoteLaku }} Laku <UIcon name="i-heroicons-check" class="w-3 h-3" /></span>
+                      <span class="text-[10px] text-red-400 flex items-center gap-0.5">{{ rfTrees.length - rfVoteLaku }} Tidak <UIcon name="i-heroicons-x-mark" class="w-3 h-3" /></span>
                     </div>
                   </div>
                 </div>
@@ -529,7 +530,7 @@
                 </div>
               </div>
               <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5">
-                <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1">📐 Kalkulator Posisi Harga</h4>
+                <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-1.5"><UIcon name="i-heroicons-calculator" class="w-4 h-4 text-gray-500" /> Kalkulator Posisi Harga</h4>
                 <p class="text-xs text-gray-500 mb-5">Geser slider untuk melihat δ dan segmen risiko produkmu vs pasar secara real-time.</p>
                 <div class="space-y-5 mb-6">
                   <div>
@@ -617,7 +618,10 @@
                       <div class="w-8 h-1.5 rounded-full shrink-0" :class="thresh.barColor" />
                       <span class="font-mono" :class="thresh.textColor">{{ thresh.range }}</span>
                       <span class="text-gray-600">→</span>
-                      <span class="text-gray-700 dark:text-gray-300">{{ thresh.label }}</span>
+                      <span class="text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                        {{ thresh.label }}
+                        <UIcon :name="thresh.icon" :class="thresh.textColor" class="w-3.5 h-3.5" />
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -627,7 +631,7 @@
                   <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-4">Alur Prediksi Visual</h4>
                   <div class="space-y-2">
                     <div v-for="(step, i) in pipelineSteps" :key="i" class="flex items-center gap-3 p-2.5 bg-gray-100 dark:bg-gray-800/40 rounded-xl">
-                      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0" :class="step.bg">{{ step.icon }}</div>
+                      <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" :class="step.bg"><UIcon :name="step.icon" class="w-5 h-5 text-white/80" /></div>
                       <div class="flex-1">
                         <p class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ step.title }}</p>
                         <p class="text-[10px] text-gray-500">{{ step.desc }}</p>
@@ -638,7 +642,7 @@
                   </div>
                 </div>
                 <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-5 space-y-3">
-                  <p class="text-xs text-emerald-400 font-bold">📊 Spesifikasi Model</p>
+                  <p class="text-xs text-emerald-400 font-bold flex items-center gap-1.5"><UIcon name="i-heroicons-chart-bar" class="w-4 h-4" /> Spesifikasi Model</p>
                   <div class="grid grid-cols-2 gap-3">
                     <div class="bg-gray-100 dark:bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-gray-900 dark:text-white">≥92%</p><p class="text-[10px] text-gray-500 mt-0.5">Akurasi Validasi</p></div>
                     <div class="bg-gray-100 dark:bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-gray-900 dark:text-white">1.027+</p><p class="text-[10px] text-gray-500 mt-0.5">Data Training</p></div>
@@ -655,7 +659,7 @@
         <!-- Live Calculator -->
         <div class="mt-10 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700/60 rounded-2xl overflow-hidden">
           <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3 bg-gray-50 dark:bg-gray-900">
-            <div class="w-9 h-9 bg-emerald-500/10 rounded-xl flex items-center justify-center shrink-0"><span class="text-base">🧮</span></div>
+            <div class="w-9 h-9 bg-emerald-500/10 rounded-xl flex items-center justify-center shrink-0"><UIcon name="i-heroicons-calculator" class="w-5 h-5 text-emerald-500" /></div>
             <div>
               <h3 class="text-sm font-bold text-gray-900 dark:text-white">Kalkulator Skor Interaktif</h3>
               <p class="text-xs text-gray-500">Geser slider dan lihat skor prediksi berubah secara real-time</p>
@@ -702,9 +706,12 @@
                   >{{ calcFinalScore.toFixed(1) }}</span>
                   <span class="text-2xl text-gray-600 mb-2">%</span>
                 </div>
-                <p class="text-sm font-bold mb-4"
+                <p class="text-sm font-bold mb-4 flex items-center justify-center gap-1.5"
                   :class="calcFinalScore >= 70 ? 'text-emerald-300' : calcFinalScore >= 40 ? 'text-amber-300' : 'text-red-300'"
-                >{{ calcFinalScore >= 70 ? '🌟 SANGAT MENARIK' : calcFinalScore >= 40 ? '✅ CUKUP MENARIK' : '⚠️ KURANG MENARIK' }}</p>
+                >
+                  <UIcon :name="calcFinalScore >= 70 ? 'i-heroicons-star-solid' : calcFinalScore >= 40 ? 'i-heroicons-check-circle-solid' : 'i-heroicons-exclamation-triangle-solid'" class="w-5 h-5" />
+                  {{ calcFinalScore >= 70 ? 'SANGAT MENARIK' : calcFinalScore >= 40 ? 'CUKUP MENARIK' : 'KURANG MENARIK' }}
+                </p>
                 <div class="bg-gray-200 dark:bg-gray-800 rounded-full h-2 overflow-hidden mb-4">
                   <div
                     class="h-2 rounded-full transition-all duration-500"
@@ -1044,10 +1051,10 @@ const features = [
 const activeAiTab = ref('tfidf');
 
 const aiTabs = [
-  { id: 'tfidf', icon: '🔍', label: 'TF-IDF & Cosine' },
-  { id: 'rf', icon: '🌳', label: 'Random Forest' },
-  { id: 'harga', icon: '💰', label: 'Analisis Harga' },
-  { id: 'final', icon: '📊', label: 'Skor Akhir' },
+  { id: 'tfidf', icon: 'i-heroicons-magnifying-glass', label: 'TF-IDF & Cosine' },
+  { id: 'rf', icon: 'i-heroicons-cpu-chip', label: 'Random Forest' },
+  { id: 'harga', icon: 'i-heroicons-currency-dollar', label: 'Analisis Harga' },
+  { id: 'final', icon: 'i-heroicons-chart-bar', label: 'Skor Akhir' },
 ];
 
 // TF-IDF Demo
@@ -1079,9 +1086,9 @@ const demoMatches = computed(() => {
 // Random Forest
 const rfTrees = ref([
   { id: 1, vote: 'laku', features: ['Kemiripan nama: 78%', 'Harga: Menengah (Rp 45rb)', 'Sub-kategori: Populer'] },
-  { id: 2, vote: 'laku', features: ['Rating rata-rata kompetitor: 4.7⭐', 'Jumlah terjual: 1.2k/bln', 'Marketplace: Shopee'] },
+  { id: 2, vote: 'laku', features: ['Rating rata-rata kompetitor: 4.7/5', 'Jumlah terjual: 1.2k/bln', 'Marketplace: Shopee'] },
   { id: 3, vote: 'tidak', features: ['Harga: +35% dari median pasar', 'Kompetitor aktif: 40+ produk', 'Kemiripan rendah: 45%'] },
-  { id: 4, vote: 'laku', features: ['Kemiripan nama: 82%', 'Rating kompetitor: 4.8⭐', 'Penjualan: Volume tinggi'] },
+  { id: 4, vote: 'laku', features: ['Kemiripan nama: 82%', 'Rating kompetitor: 4.8/5', 'Penjualan: Volume tinggi'] },
   { id: 5, vote: 'laku', features: ['Sub-kategori terpopuler', 'Harga menengah pasar', 'Produk serupa banyak laku'] },
 ]);
 const selectedTree = ref<number | null>(null);
@@ -1131,9 +1138,9 @@ const calcFinalScore = computed(() => Math.min(100, Math.max(0, calcRfProb.value
 
 // Static display data
 const scoreThresholds = [
-  { range: 'Skor ≥ 70', label: 'Sangat Menarik 🌟', barColor: 'bg-emerald-500', textColor: 'text-emerald-400' },
-  { range: '40 ≤ Skor < 70', label: 'Cukup Menarik ✅', barColor: 'bg-amber-500', textColor: 'text-amber-400' },
-  { range: 'Skor < 40', label: 'Kurang Menarik ⚠️', barColor: 'bg-red-500', textColor: 'text-red-400' },
+  { range: 'Skor ≥ 70', label: 'Sangat Menarik', barColor: 'bg-emerald-500', textColor: 'text-emerald-400', icon: 'i-heroicons-star-solid' },
+  { range: '40 ≤ Skor < 70', label: 'Cukup Menarik', barColor: 'bg-amber-500', textColor: 'text-amber-400', icon: 'i-heroicons-check-circle-solid' },
+  { range: 'Skor < 40', label: 'Kurang Menarik', barColor: 'bg-red-500', textColor: 'text-red-400', icon: 'i-heroicons-exclamation-triangle-solid' },
 ];
 const pipelineFormula = [
   { code: 'vec = TF_IDF.transform(nama_produk)', desc: 'Nama produk → vektor numerik', bg: 'bg-violet-500/15', textColor: 'text-violet-400' },
@@ -1143,11 +1150,11 @@ const pipelineFormula = [
   { code: 'Skor = P[1] × 100', desc: 'Konversi probabilitas ke skala 0–100', bg: 'bg-teal-500/15', textColor: 'text-teal-400' },
 ];
 const pipelineSteps = [
-  { icon: '📝', title: 'Input Produk', desc: 'Nama, kategori, harga', bg: 'bg-gray-700' },
-  { icon: '🔍', title: 'TF-IDF', desc: 'Vektorisasi nama', bg: 'bg-violet-900/60' },
-  { icon: '🔗', title: 'Cosine Sim', desc: 'Cari produk mirip', bg: 'bg-blue-900/60' },
-  { icon: '🌳', title: 'Random Forest', desc: 'Voting N pohon', bg: 'bg-emerald-900/60' },
-  { icon: '📊', title: 'Skor Akhir', desc: 'Output prediksi', bg: 'bg-teal-900/60' },
+  { icon: 'i-heroicons-document-text', title: 'Input Produk', desc: 'Nama, kategori, harga', bg: 'bg-gray-700' },
+  { icon: 'i-heroicons-magnifying-glass', title: 'TF-IDF', desc: 'Vektorisasi nama', bg: 'bg-violet-900/60' },
+  { icon: 'i-heroicons-link', title: 'Cosine Sim', desc: 'Cari produk mirip', bg: 'bg-blue-900/60' },
+  { icon: 'i-heroicons-cpu-chip', title: 'Random Forest', desc: 'Voting N pohon', bg: 'bg-emerald-900/60' },
+  { icon: 'i-heroicons-chart-bar', title: 'Skor Akhir', desc: 'Output prediksi', bg: 'bg-teal-900/60' },
 ];
 
 const steps = [

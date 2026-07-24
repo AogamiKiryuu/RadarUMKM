@@ -171,7 +171,7 @@ const handleLogout = async () => {
     // Sync client-side session state so loggedIn becomes false before navigating
     await fetchSession();
     toast.remove(t.id);
-    toast.add({ title: 'Berhasil Keluar', description: 'Sampai jumpa kembali! 👋', color: 'success', icon: 'i-heroicons-check-circle' });
+    toast.add({ title: 'Berhasil Keluar', description: 'Sampai jumpa kembali!', color: 'success', icon: 'i-heroicons-check-circle' });
     await navigateTo('/');
   } catch {
     toast.remove(t.id);
