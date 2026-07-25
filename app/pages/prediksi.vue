@@ -364,6 +364,7 @@
               <p class="text-xs text-gray-400">{{ formatNumber(product.jumlah_terjual) }} terjual</p>
             </div>
           </div>
+          </div>
         </div>
       </div>
     </div>
