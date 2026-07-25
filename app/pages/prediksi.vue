@@ -23,8 +23,8 @@
 
       <div class="flex flex-col lg:grid lg:grid-cols-5 gap-6">
         <!-- ── Form Panel ── -->
-        <div :class="result && !loading ? 'order-3' : 'order-1'" class="lg:order-none lg:col-span-2 space-y-4">
-          <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+        <div class="contents lg:block lg:col-span-2 lg:space-y-4">
+          <div class="order-1 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 flex items-center gap-2">
               <div class="p-1.5 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
                 <UIcon name="i-heroicons-pencil-square" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
@@ -60,7 +60,7 @@
           </div>
 
           <!-- History -->
-          <div v-if="historyItems.length > 0" class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+          <div v-if="historyItems.length > 0" class="order-2 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <div class="p-1.5 bg-gray-50 dark:bg-gray-800 rounded-lg">
@@ -89,7 +89,7 @@
             </div>
           </div>
           <!-- Produk Terpopuler (pindah ke kiri) -->
-          <div v-if="result && !loading && result.produkTerpopuler && result.produkTerpopuler.produk?.length > 0" class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+          <div v-if="result && !loading && result.produkTerpopuler && result.produkTerpopuler.produk?.length > 0" class="order-5 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
               <div class="p-1.5 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
                 <UIcon name="i-heroicons-fire" class="w-3.5 h-3.5 text-rose-500" />
@@ -134,7 +134,7 @@
         </div>
 
         <!-- ── Results Panel ── -->
-        <div :class="result && !loading ? 'order-1' : 'order-2'" class="lg:order-none lg:col-span-3 space-y-4">
+        <div class="order-3 lg:order-none lg:col-span-3 space-y-4">
           <!-- Empty State -->
           <div
             v-if="!result && !loading && !prediksiError"
@@ -321,7 +321,7 @@
         <!-- ── Kompetitor Serupa — Full Width ── -->
         <div
           v-if="result && !loading && result.similarProducts && result.similarProducts.length > 0"
-          class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm order-2 lg:order-none lg:col-span-5"
+          class="order-4 lg:order-none lg:col-span-5 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm"
         >
         <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
           <div class="flex items-center gap-2">
