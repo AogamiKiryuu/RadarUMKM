@@ -411,7 +411,7 @@ const handlePrediksi = async () => {
   const t = toast.add({ title: 'Menganalisis pasar...', description: 'AI sedang memproses data produk Anda, harap tunggu', icon: 'i-heroicons-cpu-chip', color: 'neutral' });
 
   // Cold sleep detector: tampilkan toast peringatan jika server butuh waktu lama
-  let coldSleepToastId: string | undefined;
+  let coldSleepToastId: string | number | undefined;
   const coldSleepTimer = setTimeout(() => {
     const ct = toast.add({
       title: 'Server sedang dinyalakan...',

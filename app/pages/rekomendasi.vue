@@ -64,7 +64,7 @@
                 <p class="text-sm font-semibold text-red-700 dark:text-red-400 mb-1">Analisis Gagal</p>
                 <p class="text-sm text-red-600 dark:text-red-300 leading-relaxed">{{ analisisError }}</p>
                 <UButton
-                  @click="analisisError = null"
+                  @click="() => { analisisError = null }"
                   variant="soft"
                   color="error"
                   size="xs"
@@ -364,7 +364,7 @@ const handleAnalisis = async () => {
   const t = toast.add({ title: 'Menganalisis bisnis Anda...', description: 'Sedang menyiapkan rekomendasi strategis', icon: 'i-heroicons-light-bulb', color: 'neutral' });
 
   // Cold sleep detector: tampilkan toast peringatan jika server butuh waktu lama
-  let coldSleepToastId: string | undefined;
+  let coldSleepToastId: string | number | undefined;
   const coldSleepTimer = setTimeout(() => {
     const ct = toast.add({
       title: 'Server sedang dinyalakan...',
