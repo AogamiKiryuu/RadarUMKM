@@ -409,14 +409,45 @@ const handlePrediksi = async () => {
   result.value = null;
   prediksiError.value = null;
   const t = toast.add({ title: 'Menganalisis pasar...', description: 'AI sedang memproses data produk Anda, harap tunggu', icon: 'i-heroicons-cpu-chip', color: 'neutral' });
+
+  // Cold sleep detector: tampilkan toast peringatan jika server butuh waktu lama
+  let coldSleepToastId: string | undefined;
+  const coldSleepTimer = setTimeout(() => {
+    const ct = toast.add({
+      title: 'Server sedang dinyalakan...',
+      description: 'Server AI sempat tidur dan sedang dibangunkan. Mohon tunggu sebentar, ini hanya terjadi sekali.',
+      icon: 'i-heroicons-cloud-arrow-up',
+      color: 'warning',
+      duration: 0, // tetap tampil sampai di-remove
+    });
+    coldSleepToastId = ct.id;
+  }, 8000);
+
   try {
     result.value = await $fetch('/api/predict', { method: 'POST', body: form.value });
+    clearTimeout(coldSleepTimer);
+    if (coldSleepToastId) toast.remove(coldSleepToastId);
     toast.remove(t.id);
-    toast.add({ title: '✅ Prediksi Berhasil!', description: 'Hasil analisis pasar telah ditampilkan', color: 'success', icon: 'i-heroicons-chart-bar' });
+    toast.add({ title: 'Prediksi Berhasil!', description: 'Hasil analisis pasar telah ditampilkan', color: 'success', icon: 'i-heroicons-chart-bar' });
     // Auto-save to history
     saveHistory();
   } catch (err: any) {
+    clearTimeout(coldSleepTimer);
+    if (coldSleepToastId) toast.remove(coldSleepToastId);
     toast.remove(t.id);
+    // Deteksi cold sleep: 503 atau timeout berarti server baru bangun
+    const isServerDown = err?.status === 503 || err?.statusCode === 503
+      || err?.message?.toLowerCase().includes('timeout')
+      || err?.message?.toLowerCase().includes('fetch failed');
+    if (isServerDown) {
+      toast.add({
+        title: 'Server Belum Siap',
+        description: 'Server AI baru selesai cold sleep. Silakan coba lagi dalam beberapa detik — server sudah berjalan.',
+        icon: 'i-heroicons-arrow-path',
+        color: 'warning',
+        duration: 8000,
+      });
+    }
     prediksiError.value = err?.data?.message || err.message || 'Terjadi kesalahan tidak diketahui.';
   } finally {
     loading.value = false;

@@ -949,7 +949,7 @@ const handleLogin = async () => {
     await $fetch('/api/auth/login', { method: 'POST', body: form.value });
     await fetchSession();
     toast.remove(t.id);
-    toast.add({ title: 'Selamat datang! 👋', description: 'Anda berhasil masuk ke dashboard', color: 'success', icon: 'i-heroicons-check-circle' });
+    toast.add({ title: 'Selamat datang!', description: 'Anda berhasil masuk ke dashboard', color: 'success', icon: 'i-heroicons-hand-raised' });
     showModal.value = false;
     await router.push('/dashboard');
   } catch (err: any) {
@@ -964,7 +964,7 @@ const handleRegister = async () => {
   try {
     await $fetch('/api/auth/register', { method: 'POST', body: registerForm.value });
     toast.remove(t.id);
-    toast.add({ title: '✅ Akun Berhasil Dibuat!', description: 'Silakan masuk dengan akun baru Anda', color: 'success', icon: 'i-heroicons-user-circle' });
+    toast.add({ title: 'Akun Berhasil Dibuat!', description: 'Silakan masuk dengan akun baru Anda', color: 'success', icon: 'i-heroicons-user-circle' });
     activeTab.value = 'login';
     form.value.email = registerForm.value.email;
     form.value.password = '';

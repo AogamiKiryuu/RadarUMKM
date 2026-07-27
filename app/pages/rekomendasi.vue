@@ -362,12 +362,43 @@ const handleAnalisis = async () => {
   result.value = null;
   analisisError.value = null;
   const t = toast.add({ title: 'Menganalisis bisnis Anda...', description: 'Sedang menyiapkan rekomendasi strategis', icon: 'i-heroicons-light-bulb', color: 'neutral' });
+
+  // Cold sleep detector: tampilkan toast peringatan jika server butuh waktu lama
+  let coldSleepToastId: string | undefined;
+  const coldSleepTimer = setTimeout(() => {
+    const ct = toast.add({
+      title: 'Server sedang dinyalakan...',
+      description: 'Server AI sempat tidur dan sedang dibangunkan. Mohon tunggu sebentar, ini hanya terjadi sekali.',
+      icon: 'i-heroicons-cloud-arrow-up',
+      color: 'warning',
+      duration: 0,
+    });
+    coldSleepToastId = ct.id;
+  }, 8000);
+
   try {
     result.value = await $fetch('/api/recommendations/analyze', { method: 'POST', body: form.value });
+    clearTimeout(coldSleepTimer);
+    if (coldSleepToastId) toast.remove(coldSleepToastId);
     toast.remove(t.id);
     toast.add({ title: 'Analisis Selesai!', description: 'Rekomendasi strategis telah ditampilkan', color: 'success', icon: 'i-heroicons-check-circle' });
   } catch (err: any) {
+    clearTimeout(coldSleepTimer);
+    if (coldSleepToastId) toast.remove(coldSleepToastId);
     toast.remove(t.id);
+    // Deteksi cold sleep: 503 atau timeout berarti server baru bangun
+    const isServerDown = err?.status === 503 || err?.statusCode === 503
+      || err?.message?.toLowerCase().includes('timeout')
+      || err?.message?.toLowerCase().includes('fetch failed');
+    if (isServerDown) {
+      toast.add({
+        title: 'Server Belum Siap',
+        description: 'Server AI baru selesai cold sleep. Silakan coba lagi dalam beberapa detik — server sudah berjalan.',
+        icon: 'i-heroicons-arrow-path',
+        color: 'warning',
+        duration: 8000,
+      });
+    }
     analisisError.value = err?.data?.message || err?.message || 'Terjadi kesalahan. Coba lagi.';
   } finally {
     loading.value = false;

@@ -23,6 +23,10 @@ export default defineNuxtConfig({
     head: {
       title: 'RadarUMKMBogor',
       meta: [{ name: 'description', content: 'Sistem Prediksi Daya Tarik Produk UMKM Bogor' }],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon.png' },
+      ],
     },
   },
 
