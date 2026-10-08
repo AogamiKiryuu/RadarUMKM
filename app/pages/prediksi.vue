@@ -260,6 +260,20 @@
                     <span>{{ poin }}</span>
                   </li>
                 </ul>
+
+                <!-- Banner Rekomendasi Diferensiasi Khusus Jika Kurang Menarik Namun Pasar Kompetitor Sangat Laris -->
+                <div
+                  v-if="result.peluang < 40 && result.similarProducts && result.similarProducts.some(p => (p.terjual || p.jumlah_terjual) > 50)"
+                  class="mt-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 flex items-start gap-3"
+                >
+                  <UIcon name="i-heroicons-sparkles" class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <div class="text-xs leading-relaxed text-amber-900 dark:text-amber-200">
+                    <p class="font-bold mb-1">Rekomendasi Strategis UMKM: Lakukan Diferensiasi Varian</p>
+                    <p class="text-amber-800 dark:text-amber-300">
+                      Pasar untuk komoditas serupa terbukti sangat aktif di e-commerce, namun persaingan dengan nama generik sangat padat karena didominasi merek-merek besar mapan. Agar peluang produk Anda meningkat tanpa mendompleng merek orang lain, sertakan kata kunci varian rasa unik atau keunggulan spesifik (contoh: <em>Brownies Talas Keju</em>, <em>Lapis Talas Pandan</em>, atau <em>Bolu Talas Organik</em>).
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
