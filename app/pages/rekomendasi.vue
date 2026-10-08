@@ -80,13 +80,13 @@
           <!-- Empty State -->
           <div
             v-if="!result && !loading && !analisisError"
-            class="bg-white dark:bg-gray-900 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center py-24 text-center"
+            class="bg-white dark:bg-gray-900 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center py-20 px-4 text-center"
           >
-            <div class="w-14 h-14 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-4">
-              <UIcon name="i-heroicons-light-bulb" class="w-7 h-7 text-gray-300 dark:text-gray-600" />
+            <div class="w-16 h-16 bg-gradient-to-br from-violet-50 to-emerald-50 dark:from-violet-950/40 dark:to-emerald-950/40 rounded-2xl flex items-center justify-center mb-4 p-2 shadow-inner">
+              <img src="/logo-icon.webp" alt="RadarUMKM" class="w-10 h-10 object-contain opacity-80" />
             </div>
-            <p class="text-gray-600 dark:text-gray-400 font-semibold text-sm">Belum ada rekomendasi</p>
-            <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">Isi form dan tekan "Analisis Sekarang"</p>
+            <p class="text-gray-700 dark:text-gray-300 font-semibold text-sm">Belum ada rekomendasi</p>
+            <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">Isi form di samping dan tekan "Analisis Sekarang"</p>
           </div>
 
           <!-- Loading Skeleton -->

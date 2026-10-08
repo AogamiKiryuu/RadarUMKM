@@ -138,12 +138,12 @@
           <!-- Empty State -->
           <div
             v-if="!result && !loading && !prediksiError"
-            class="bg-white dark:bg-gray-900 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center py-24 text-center"
+            class="bg-white dark:bg-gray-900 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center py-20 px-4 text-center"
           >
-            <div class="w-16 h-16 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-              <UIcon name="i-heroicons-arrow-trending-up" class="w-8 h-8 text-emerald-300 dark:text-emerald-700" />
+            <div class="w-16 h-16 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl flex items-center justify-center mb-4 p-2 shadow-inner">
+              <img src="/logo-icon.webp" alt="RadarUMKM" class="w-10 h-10 object-contain opacity-80" />
             </div>
-            <p class="text-gray-600 dark:text-gray-400 font-semibold text-sm">Belum ada hasil prediksi</p>
+            <p class="text-gray-700 dark:text-gray-300 font-semibold text-sm">Belum ada hasil prediksi</p>
             <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">Isi form di samping dan tekan "Prediksi Sekarang"</p>
           </div>
 

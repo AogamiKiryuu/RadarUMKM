@@ -14,22 +14,25 @@
       ]"
     >
       <!-- Brand -->
-      <div
+      <NuxtLink
+        to="/dashboard"
         :class="[
-          'flex items-center border-b border-gray-100 dark:border-gray-800 shrink-0 overflow-hidden transition-all duration-300',
-          railMode ? 'px-[14px] py-5 justify-center' : 'gap-3 px-5 py-5',
+          'flex items-center border-b border-gray-100 dark:border-gray-800 shrink-0 overflow-hidden transition-all duration-300 group',
+          railMode ? 'px-[14px] py-4 justify-center' : 'gap-3 px-5 py-4',
         ]"
       >
-        <div class="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center shadow-md shadow-emerald-200 dark:shadow-emerald-900/50 shrink-0">
-          <UIcon name="i-heroicons-chart-bar-square" class="w-5 h-5 text-white" />
-        </div>
+        <img
+          src="/logo-icon.webp"
+          alt="RadarUMKM Logo"
+          class="w-10 h-10 object-contain shrink-0 group-hover:scale-105 transition-transform"
+        />
         <Transition name="label">
           <div v-if="!railMode" class="min-w-0 overflow-hidden">
             <p class="font-bold text-sm text-gray-900 dark:text-white leading-tight whitespace-nowrap">RadarUMKM<span class="text-emerald-600">Bogor</span></p>
             <p class="text-[10px] text-gray-400 dark:text-gray-500 truncate">Prediksi Tren Pasar</p>
           </div>
         </Transition>
-      </div>
+      </NuxtLink>
 
       <!-- Navigation -->
       <nav class="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto overflow-x-hidden">
@@ -107,10 +110,15 @@
     <div :class="['flex-1 flex flex-col min-w-0 transition-all duration-300', railMode ? 'lg:ml-[68px]' : 'lg:ml-60']">
       <!-- Top Bar -->
       <header class="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 h-14 flex items-center px-4 sm:px-6 gap-4">
-        <!-- Mobile hamburger -->
-        <button class="lg:hidden p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" @click="sidebarOpen = true">
-          <UIcon name="i-heroicons-bars-3" class="w-5 h-5" />
-        </button>
+        <!-- Mobile hamburger & brand -->
+        <div class="lg:hidden flex items-center gap-2">
+          <button class="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" @click="sidebarOpen = true">
+            <UIcon name="i-heroicons-bars-3" class="w-5 h-5" />
+          </button>
+          <NuxtLink to="/dashboard" class="flex items-center gap-1.5">
+            <img src="/logo-icon.webp" alt="RadarUMKM Logo" class="w-7 h-7 object-contain" />
+          </NuxtLink>
+        </div>
 
         <!-- Page title from slot -->
         <div class="flex-1 min-w-0">

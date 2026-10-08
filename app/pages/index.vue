@@ -8,12 +8,10 @@
     >
       <div class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center gap-6">
         <!-- Brand -->
-        <div class="flex items-center gap-2.5 shrink-0">
-          <div class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md shadow-emerald-200 dark:shadow-emerald-900/50">
-            <UIcon name="i-heroicons-chart-bar-square" class="w-[18px] h-[18px] text-white" />
-          </div>
+        <a href="#hero" class="flex items-center gap-2.5 shrink-0 group">
+          <img src="/logo-icon.webp" alt="RadarUMKM Logo" class="w-8 h-8 object-contain shrink-0 group-hover:scale-105 transition-transform" />
           <span class="font-bold text-gray-900 dark:text-white text-sm">RadarUMKM<span class="text-emerald-600">Bogor</span></span>
-        </div>
+        </a>
 
         <!-- Nav Links -->
         <nav class="hidden md:flex items-center gap-1 ml-4">
@@ -57,7 +55,7 @@
         <!-- Text Content -->
         <div>
           <div class="inline-flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-emerald-100 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-400 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-6 shadow-sm">
-            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+            <img src="/logo-icon.webp" alt="RadarUMKM" class="w-4 h-4 object-contain inline-block" />
             Data real-time dari 3 marketplace terbesar Indonesia
           </div>
           <h1 class="text-4xl sm:text-5xl xl:text-6xl font-extrabold text-gray-900 dark:text-white leading-[1.1] tracking-tight mb-6">
@@ -115,7 +113,10 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-red-400" />
                 <div class="w-2.5 h-2.5 rounded-full bg-yellow-400" />
                 <div class="w-2.5 h-2.5 rounded-full bg-green-400" />
-                <span class="ml-3 text-xs text-gray-400 font-medium">RadarUMKMBogor — Hasil Prediksi</span>
+                <div class="flex items-center gap-1.5 ml-3">
+                  <img src="/logo-icon.webp" alt="RadarUMKM" class="w-4 h-4 object-contain" />
+                  <span class="text-xs text-gray-400 font-medium">RadarUMKMBogor — Hasil Prediksi</span>
+                </div>
               </div>
               <div class="p-5 space-y-4">
                 <!-- Score Card -->
@@ -778,9 +779,7 @@
       <div class="max-w-6xl mx-auto px-5 sm:px-8">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
           <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-              <UIcon name="i-heroicons-chart-bar-square" class="w-4 h-4 text-white" />
-            </div>
+            <img src="/logo-icon.webp" alt="RadarUMKM Logo" class="w-7 h-7 object-contain shrink-0" />
             <span class="font-bold text-white text-sm">RadarUMKM<span class="text-emerald-400">Bogor</span></span>
           </div>
           <p class="text-gray-500 text-xs text-center">&copy; {{ new Date().getFullYear() }} RadarUMKMBogor &mdash; Mendukung UMKM Kota &amp; Kabupaten Bogor.</p>
@@ -801,9 +800,7 @@
             <!-- Modal Header -->
             <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-100 dark:border-gray-800">
               <div class="flex items-center gap-2.5">
-                <div class="w-7 h-7 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-                  <UIcon name="i-heroicons-chart-bar-square" class="w-[15px] h-[15px] text-white" />
-                </div>
+                <img src="/logo-icon.webp" alt="RadarUMKM Logo" class="w-7 h-7 object-contain" />
                 <span class="font-bold text-sm text-gray-900 dark:text-white">RadarUMKM<span class="text-emerald-600">Bogor</span></span>
               </div>
               <button class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" @click="showModal = false">
@@ -812,6 +809,12 @@
             </div>
 
             <div class="px-6 py-6">
+              <!-- Branded Logo Header -->
+              <div class="flex flex-col items-center justify-center mb-5 text-center">
+                <img src="/logo.webp" alt="RadarUMKM" class="h-16 w-auto object-contain dark:brightness-110" />
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Platform Prediksi Tren Pasar &amp; Potensi Produk UMKM</p>
+              </div>
+
               <!-- Tab Switcher -->
               <div class="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl mb-6">
                 <button
