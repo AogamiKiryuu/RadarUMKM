@@ -17,12 +17,12 @@ Berikut adalah daftar fitur yang digunakan oleh model saat memprediksi:
 
 ---
 
-## 2. Definisi Label (Target Variabel)
-Label (Y) yang dilatih oleh model bernilai `0` (Tidak Menarik) atau `1` (Menarik).
-Kondisi suatu produk dianggap bernilai `1` pada saat *training* adalah jika memenuhi ketiga kriteria ini:
-- **Jumlah Terjual** > Median jumlah terjual di kategorinya
-- **Rating** >= 4.0
-- **Popularity Score** > Persentil ke-60 dari seluruh data
+## 2. Definisi Label (Target Variabel — Model v4)
+Label ($Y$) yang dilatih oleh model bernilai `0` (Tidak Menarik) atau `1` (Menarik).
+Pada **Model v4 resmi**, labeling menggunakan metode **Category-Stratified Percentile Ranking (Persentil 50% Intra-Kategori)**:
+- **Label 1 (Menarik):** Volume penjualan produk berada di atas persentil 50% (median) di dalam kategorinya masing-masing ($\text{rank\_pct} > 0.50$).
+- **Label 0 (Kurang Menarik):** Volume penjualan produk berada pada atau di bawah median kategorinya ($\text{rank\_pct} \le 0.50$).
+- **Keunggulan:** Menjamin keadilan sektoral ($50\% : 50\%$ di tiap kategori), sehingga kategori fashion atau kerajinan tidak dirugikan saat bersaing melawan produk kuliner.
 
 ---
 

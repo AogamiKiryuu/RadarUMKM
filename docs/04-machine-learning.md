@@ -44,10 +44,9 @@ Model ML dijalankan sebagai layanan terpisah menggunakan **Python Flask**, di-de
 | `popularity_score` | float | Skor popularitas gabungan |
 | `label` | int | 0 (tidak menarik) / 1 (menarik) — target ML |
 
-**Label (`label`)** ditentukan berdasarkan kombinasi:
-- `jumlah_terjual` di atas median kategori, **DAN**
-- `rating` ≥ 4.0, **DAN**
-- `popularity_score` di atas persentil ke-60
+**Label (`label`)** ditentukan berdasarkan metodologi **Model v4 (Fair Sektoral)**:
+- Persentil volume penjualan intra-kategori: Produk dilabeli **1 (Menarik)** jika berada di atas persentil 50% (median) di dalam kategorinya masing-masing (`rank_pct > 0.50`), selain itu **0 (Kurang Menarik)**.
+- Menjamin keseimbangan 50%:50% di tiap sektor tanpa bias terhadap kategori tertentu (misal: pakaian tidak kalah saing dari makanan).
 
 ---
 
@@ -55,9 +54,9 @@ Model ML dijalankan sebagai layanan terpisah menggunakan **Python Flask**, di-de
 
 ### Algoritma
 
-Model yang digunakan: **Random Forest Classifier** (dan/atau Gradient Boosting — sesuai versi terbaru)
+Model yang digunakan: **Random Forest Classifier v4** (bebas target leakage & adil sektoral).
 
-**File model:** `model_umkm_bogor.joblib` (di repo Flask API)
+**File model:** `models/model_umkm_bogor_v4.joblib` (di repo Flask API)
 
 ### Fitur Input Model
 
