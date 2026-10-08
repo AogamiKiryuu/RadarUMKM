@@ -261,16 +261,39 @@
                   </li>
                 </ul>
 
-                <!-- Banner Rekomendasi Diferensiasi Khusus Jika Kurang Menarik Namun Pasar Kompetitor Sangat Laris -->
+                <!-- Catatan Penjelasan: Mengapa Produk Non-Brand / Nama Generik Cenderung Kurang Menarik -->
                 <div
-                  v-if="result.peluang < 40 && result.similarProducts && result.similarProducts.some(p => (p.terjual || p.jumlah_terjual) > 50)"
-                  class="mt-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 flex items-start gap-3"
+                  v-if="result.predictionScore < 50"
+                  class="mt-4 p-4 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 space-y-2.5"
                 >
-                  <UIcon name="i-heroicons-sparkles" class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                  <div class="text-xs leading-relaxed text-amber-900 dark:text-amber-200">
-                    <p class="font-bold mb-1">Rekomendasi Strategis UMKM: Lakukan Diferensiasi Varian</p>
-                    <p class="text-amber-800 dark:text-amber-300">
-                      Pasar untuk komoditas serupa terbukti sangat aktif di e-commerce, namun persaingan dengan nama generik sangat padat karena didominasi merek-merek besar mapan. Agar peluang produk Anda meningkat tanpa mendompleng merek orang lain, sertakan kata kunci varian rasa unik atau keunggulan spesifik (contoh: <em>Brownies Talas Keju</em>, <em>Lapis Talas Pandan</em>, atau <em>Bolu Talas Organik</em>).
+                  <div class="flex items-center gap-2 text-amber-900 dark:text-amber-200 font-bold text-xs uppercase tracking-wide">
+                    <UIcon name="i-heroicons-information-circle" class="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                    <span>Catatan: Mengapa Produk Non-Brand / Nama Generik Cenderung "Kurang Menarik"?</span>
+                  </div>
+
+                  <div class="text-xs text-amber-900/90 dark:text-amber-200/90 leading-relaxed space-y-2">
+                    <p>
+                      <strong>1. Kejenuhan Pasar & Dominasi Merek Mapan:</strong> Di marketplace, kata kunci komoditas populer dengan nama generik (seperti <em>"Lapis Talas"</em> atau <em>"Asinan Bogor"</em>) bersaing langsung di pasar padat (<em>Red Ocean</em>) yang didominasi merek-merek besar pelopor dengan ribuan ulasan dan reputasi tinggi. Produk generik tanpa merek cenderung tenggelam di hasil pencarian pembeli.
+                    </p>
+                    <p>
+                      <strong>2. Pola Penjualan Riil Marketplace (Data Latih ML):</strong> Model AI mempelajari data historis e-commerce Bogor: toko yang menjual produk dengan nama generik polos rata-rata hanya membukukan penjualan rendah (&lt;25 unit), sedangkan listing merek mapan mencatat ratusan hingga ribuan transaksi. Model Machine Learning secara objektif merefleksikan realitas daya saing ini.
+                    </p>
+                    <p>
+                      <strong>3. Solusi Strategis untuk Pelaku UMKM:</strong> Penilaian ini bukan berarti kualitas rasa atau produk Anda kurang baik, melainkan <u>strategi penamaan generik memiliki risiko persaingan tinggi</u>. Anda disarankan memperkuat <strong>diferensiasi varian unik</strong> pada judul produk (contoh: <em>Brownies Talas Keju</em>, <em>Lapis Talas Pandan Organik</em>, atau <em>Kemasan Travel Mini</em>) agar memiliki daya tarik spesifik di pencarian marketplace.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Info Relevansi Kata Kunci Jika Produk Memiliki Nilai Cukup / Sangat Menarik -->
+                <div
+                  v-else-if="result.predictionScore >= 50 && result.similarProducts && result.similarProducts.some(p => p.jumlah_terjual > 100)"
+                  class="mt-4 p-3.5 rounded-xl bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/60 flex items-start gap-2.5 text-xs text-blue-900 dark:text-blue-200 leading-relaxed"
+                >
+                  <UIcon name="i-heroicons-sparkles" class="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                  <div>
+                    <p class="font-bold mb-0.5">Daya Tarik Relevansi Kata Kunci Kuat</p>
+                    <p class="text-blue-800 dark:text-blue-300">
+                      Nama produk ini memuat kata kunci atau varian yang memiliki rekam jejak transaksi tinggi dan minat pasar kuat di data historis marketplace Bogor.
                     </p>
                   </div>
                 </div>
