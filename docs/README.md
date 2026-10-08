@@ -15,6 +15,7 @@ Dokumentasi lengkap sistem **RadarUMKMBogor** — aplikasi prediksi daya tarik p
 | [05-database.md](./05-database.md) | Dokumentasi database (Supabase / PostgreSQL) |
 | [06-deployment.md](./06-deployment.md) | Panduan deployment ke Vercel & Render |
 | [07-algoritma-prediksi.md](./07-algoritma-prediksi.md) | Perhitungan Matematis & Cara Kerja Algoritma Prediksi |
+| [08-integrasi-web-flask.md](./08-integrasi-web-flask.md) | Integrasi Web Service (Nuxt) & Flask ML API + Perhitungan Manual |
 
 ---
 

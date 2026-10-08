@@ -63,7 +63,7 @@
                 </div>
                 <h3 class="text-white font-bold text-base">Prediksi Tren</h3>
               </div>
-              <p class="text-emerald-100/80 text-sm mb-4">Analisis daya tarik produk dengan Machine Learning + insight pasar v3</p>
+              <p class="text-emerald-100/80 text-sm mb-4">Analisis daya tarik produk dengan Machine Learning + insight pasar v4</p>
               <span class="inline-flex items-center gap-1.5 text-xs font-semibold bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full">
                 Mulai Prediksi <UIcon name="i-heroicons-arrow-right" class="w-3 h-3" />
               </span>

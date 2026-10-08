@@ -16,7 +16,7 @@
           </div>
           <div>
             <h1 class="text-xl font-bold text-gray-900 dark:text-white">Prediksi Tren Pasar</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Analisis berbasis Machine Learning v3</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Analisis berbasis Machine Learning v4</p>
           </div>
         </div>
       </div>
@@ -174,9 +174,9 @@
             <div
               class="rounded-2xl p-6 text-white overflow-hidden relative"
               :class="{
-                'bg-gradient-to-br from-emerald-500 to-teal-600': result.predictionScore >= 70,
-                'bg-gradient-to-br from-amber-500 to-orange-500': result.predictionScore >= 40 && result.predictionScore < 70,
-                'bg-gradient-to-br from-red-500 to-rose-600': result.predictionScore < 40,
+                'bg-gradient-to-br from-emerald-500 to-teal-600': result.predictionScore >= 65,
+                'bg-gradient-to-br from-teal-500 to-blue-600': result.predictionScore >= 40 && result.predictionScore < 65,
+                'bg-gradient-to-br from-rose-500 to-red-600': result.predictionScore < 40,
               }"
             >
               <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full pointer-events-none" />
@@ -189,7 +189,7 @@
                     <span class="text-2xl font-medium mb-1 text-white/80">%</span>
                   </div>
                   <p class="font-semibold text-sm mb-3 flex items-center gap-1.5">
-                    <UIcon :name="result.predictionScore >= 70 ? 'i-heroicons-star-solid' : result.predictionScore >= 40 ? 'i-heroicons-check-circle-solid' : 'i-heroicons-exclamation-triangle-solid'" class="w-4 h-4" />
+                    <UIcon :name="result.predictionScore >= 65 ? 'i-heroicons-star-solid' : result.predictionScore >= 40 ? 'i-heroicons-check-circle-solid' : 'i-heroicons-exclamation-triangle-solid'" class="w-4 h-4" />
                     {{ getKesimpulanLabel(result.kesimpulan) }}
                   </p>
                   <!-- Progress bar -->

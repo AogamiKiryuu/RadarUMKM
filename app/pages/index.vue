@@ -403,7 +403,7 @@
                       </div>
                     </div>
                     <div>
-                      <p class="text-gray-500 text-[11px] mb-2">// Fitur input model Random Forest v3:</p>
+                      <p class="text-gray-500 text-[11px] mb-2">// Fitur input model Random Forest v4:</p>
                       <div class="space-y-1.5">
                         <div v-for="f in rfFeatures" :key="f.name" class="flex items-center gap-2 text-xs">
                           <span class="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0" />
@@ -654,7 +654,7 @@
                     <div class="bg-gray-100 dark:bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-gray-900 dark:text-white">≥92%</p><p class="text-[10px] text-gray-500 mt-0.5">Akurasi Validasi</p></div>
                     <div class="bg-gray-100 dark:bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-gray-900 dark:text-white">1.027+</p><p class="text-[10px] text-gray-500 mt-0.5">Data Training</p></div>
                     <div class="bg-gray-100 dark:bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-gray-900 dark:text-white">3</p><p class="text-[10px] text-gray-500 mt-0.5">Marketplace Sumber</p></div>
-                    <div class="bg-gray-100 dark:bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-gray-900 dark:text-white">v3</p><p class="text-[10px] text-gray-500 mt-0.5">Versi Model RF</p></div>
+                    <div class="bg-gray-100 dark:bg-gray-900/60 rounded-xl p-3 text-center"><p class="text-2xl font-extrabold text-gray-900 dark:text-white">v4</p><p class="text-[10px] text-gray-500 mt-0.5">Versi Model RF</p></div>
                   </div>
                 </div>
               </div>
@@ -786,7 +786,7 @@
           <p class="text-gray-500 text-xs text-center">&copy; {{ new Date().getFullYear() }} RadarUMKMBogor &mdash; Mendukung UMKM Kota &amp; Kabupaten Bogor.</p>
           <div class="flex items-center gap-4">
             <span class="text-xs text-gray-600">Powered by</span>
-            <span class="text-xs font-semibold text-gray-400">Random Forest v3</span>
+            <span class="text-xs font-semibold text-gray-400">Random Forest v4</span>
           </div>
         </div>
       </div>
@@ -1007,7 +1007,7 @@ const features = [
   {
     icon: 'i-heroicons-arrow-trending-up',
     title: 'Prediksi Daya Tarik',
-    desc: 'Model Random Forest v3 menganalisis potensi produk berdasarkan data penjualan riil pasar Bogor.',
+    desc: 'Model Random Forest v4 menganalisis potensi produk berdasarkan data penjualan riil pasar Bogor.',
     bg: 'bg-emerald-50 dark:bg-emerald-900/20',
     iconColor: 'text-emerald-600 dark:text-emerald-400',
     gradientColor: '#10b981',
@@ -1174,7 +1174,7 @@ const steps = [
   {
     title: 'AI Menganalisis Pasar',
     tag: 'Proses',
-    desc: 'Model ML v3 mencari kompetitor serupa via TF-IDF, menghitung posisi harga, dan memprediksi daya tarik produk.',
+    desc: 'Model ML v4 mencari kompetitor serupa via TF-IDF, menghitung posisi harga, dan memprediksi daya tarik produk.',
   },
   {
     title: 'Dapatkan Insight Lengkap',

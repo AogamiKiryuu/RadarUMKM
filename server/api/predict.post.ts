@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     harga_produk : hargaProduk,
   };
 
-  // ── Panggil Flask API v3 — coba lokal dulu, fallback ke URL production ────
+  // ── Panggil Flask API v4 — coba lokal dulu, fallback ke URL production ────
   let flaskData: any;
 
   const tryFetch = async (baseUrl: string) => {
@@ -67,9 +67,9 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // ── Petakan response Flask v3 → front-end ──────────────────────────────────
+  // ── Petakan response Flask v4 → front-end ──────────────────────────────────
   //
-  // Flask v3 mengembalikan:
+  // Flask v4 mengembalikan:
   //   { status, kesimpulan, peluang_laku_persen, alasan,
   //     konteks_harga, kompetitor[], produk_terpopuler, insight_pasar }
   //
@@ -81,7 +81,7 @@ export default defineEventHandler(async (event) => {
   //                  sub_kategori_dalam_kategori_ini[] }
 
   const predictionScore: number = flaskData.peluang_laku_persen ?? 0;
-  const predictionLabel: number = predictionScore >= 50 ? 1 : 0;
+  const predictionLabel: number = predictionScore >= 40 ? 1 : 0;
   const kesimpulan: string      = flaskData.kesimpulan ?? '';
   const alasan: string[]        = Array.isArray(flaskData.alasan) ? flaskData.alasan : [flaskData.alasan ?? ''];
 
@@ -96,7 +96,7 @@ export default defineEventHandler(async (event) => {
     kemiripan_persen : k.kemiripan_persen,
   }));
 
-  // Konteks harga vs pasar (fitur baru v3)
+  // Konteks harga vs pasar (fitur v4)
   let konteksHarga = null;
   if (flaskData.konteks_harga) {
     let mappedSegmen = flaskData.konteks_harga.segmen === 'Premium' ? 'Mahal' : flaskData.konteks_harga.segmen;
@@ -110,7 +110,7 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  // Produk paling digemari di kategori ini (fitur baru v3)
+  // Produk paling digemari di kategori ini (fitur v4)
   const produkTerpopuler = flaskData.produk_terpopuler
     ? {
         label    : flaskData.produk_terpopuler.label,
@@ -130,7 +130,7 @@ export default defineEventHandler(async (event) => {
       }
     : null;
 
-  // Insight pasar keseluruhan (fitur baru v3)
+  // Insight pasar keseluruhan (fitur v4)
   const insightPasar = flaskData.insight_pasar
     ? {
         narasi                     : flaskData.insight_pasar.narasi,
